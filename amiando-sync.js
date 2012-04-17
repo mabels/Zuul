@@ -5,7 +5,8 @@
 var http = require('http')
 var fs = require('fs')
 
-var config = JSON.stringify(fs.readFileSync("config.json", "utf-8"))
+var config = JSON.parse(fs.readFileSync("config.json", "utf-8"))
+console.log("CONFIG:", config)
 
 var Amiando = function() { 
   this.apiKey = config.apiKey
@@ -24,7 +25,7 @@ Amiando.prototype.buildUrl = function(uri, opt) {
     params.push(i+"="+escape(opt[i]))
   }
   var url =  uri + "?" + params.join("&")
-  console.log("buildUrl:", url)
+  //console.log("buildUrl:", url)
   return url;
 }
 Amiando.prototype.call = function(method, uri, opt, completed) {
@@ -68,7 +69,7 @@ Amiando.prototype.sync = function(number, completed) {
   if (typeof number != "number") { number = 1 } 
   var self = this
   this.call("GET", "/api/sync/"+number, {}, function(data) {
-console.log("sync:", data)
+//console.log("sync:", data)
       completed(data)
 /*
     if (data.events.length == 0) {
@@ -83,22 +84,32 @@ console.log("sync:", data)
 }
 
 Amiando.prototype.eventFind = function(params, completed) {
-console.log("******:/api/event/find", params)
+//console.log("******:/api/event/find", params)
   this.call("GET", "/api/event/find", params, completed)
 }
 
 Amiando.prototype.ticketFind = function(params, completed) {
-console.log("******:/api/ticket/find", params)
+//console.log("******:/api/ticket/find", params)
   this.call("GET", "/api/ticket/find", params, completed);
 }
 Amiando.prototype.event = function(eventId, completed) {
-console.log("******:/api/event/", eventId)
+//console.log("******:/api/event/", eventId)
   this.call("GET", "/api/event/"+ eventId, {}, completed);
 }
 
 Amiando.prototype.ticket = function(ticketId, completed) {
-console.log("******:/api/ticket/", ticketId)
+//console.log("******:/api/ticket/", ticketId)
   this.call("GET", "/api/ticket/"+ ticketId, {}, completed);
+}
+
+Amiando.prototype.allPayments = function(eventId, completed) {
+//console.log("******:/api/ticket/", eventId)
+  this.call("GET", "/api/event/"+ eventId + "/payments", {}, completed);
+}
+
+Amiando.prototype.allTickets = function(payementId, completed) {
+//console.log("******:/api/payment/", payementId)
+  this.call("GET", "/api/payment/"+ payementId + "/tickets", {}, completed);
 }
 
 var amiando = new Amiando();
@@ -107,34 +118,44 @@ amiando.eventFind({ title: config.eventTitle }, function(eventFind) {
 console.log("eventFind:", eventFind)
   amiando.event(eventFind.ids[0], function(event) {
 console.log("event:", event)
-    amiando.ticketFind({eventId: event.event.id}, function(tickets) {
-console.log("ticketFind:", tickets)
-      var readTicket = function(id, completed) {  
+    amiando.allPayments(event.event.id, function(payments) {
+console.log("allPayments:", payments)
+      var readPayment = function(id, completed) {  
         if (!id) {
           return completed() 
         }
-        fs.readFile(id+".ticket.json", "utf-8", function(err, data) { 
-          if (err) { 
-            amiando.ticket(id, function(data) { 
-console.log("DONE")
-              if (!data || !data.ticket)  {
-                console.log("ticket:", data);
-                readTicket(tickets.ids.pop(), completed)
-                return
+        amiando.allTickets(id, function(tickets) { 
+          var readTicket = function(ticketId, completed) {
+            if (!ticketId) {
+              return completed() 
+            }
+            fs.readFile(ticketId+".ticket.json", "utf-8", function(err, data) { 
+              if (err) { 
+                amiando.ticket(ticketId, function(ticket) {
+                  fs.writeFile(ticketId+".ticket.json", JSON.stringify(ticket), "utf-8", function(err) {
+                    if (err) {
+                      console.log("can to write:", id, err)
+                    }
+                    readTicket(tickets.tickets.pop(), completed)
+                  })
+                })
+              } else {
+                readTicket(tickets.tickets.pop(), completed)
               }
-              fs.writeFile(id+".ticket.json", JSON.stringify(data), "utf-8", function(err) {
-                if (err) {
-                  console.log("can to write:", id, err)
-                }
-                readTicket(tickets.ids.pop(), completed)
-              })
+            })
+          }
+          console.log("allTickets:", tickets);
+          if (tickets && tickets.tickets) {
+            readTicket(tickets.tickets.pop(), function() {
+              readPayment(payments.payments.pop(), completed)
             })
           } else {
-            readTicket(tickets.ids.pop(), completed)
+            readPayment(payments.payments.pop(), completed)
           }
+          return
         })
       }
-      readTicket(tickets.ids.pop(), function() { 
+      readPayment(payments.payments.pop(), function() { 
 console.log("READ all tickets")
       })
     })
