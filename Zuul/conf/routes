@@ -9,6 +9,8 @@ GET     /WiFi/Login/check            controllers.Login.check()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
+#GET     /                     controllers.Login.catchAll()
+
 # catch all
 #GET     *file                       controllers.Login.index(file)
 
