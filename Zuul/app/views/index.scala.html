@@ -1,0 +1,26 @@
+@(loginForm: Form[Login.Code])
+
+@import helper._
+
+@main(title = "next conference wifi login") {
+
+  <h1>next conference wifi login<h1>
+
+  @form(action = routes.Login.check, args = 'id -> "loginform") {
+
+    <input type="hidden" name="path" value="@loginForm.data().get("path")" />
+    <input type="hidden" name="host" value="@loginForm.data().get("host")" />
+
+    @inputText(
+      field = loginForm("code"),
+      args = '_label -> "Code:", 'placeholder -> "Code"
+    )
+
+    <p class="buttons">
+      <input type="submit">
+    <p>
+
+  }
+
+}
+        
