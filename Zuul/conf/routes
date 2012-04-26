@@ -2,15 +2,20 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+# Ignore favicon requests
+GET     /favicon.ico                            404
 
-GET     /WiFi/Login            controllers.Login.index(path="/meno")
-GET     /WiFi/Login/check            controllers.Login.check()
+# Map static resources from the /app/public folder to the /public path
+GET     /WiFi/public/                          staticDir:public
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+# Catch all
+POST     /WiFi/Admin/search/service            Admin.service
+GET     /WiFi/Admin/search/formAttendant        Admin.formAttendant
+POST     /WiFi/Admin/search/newAttendant        Admin.newAttendant
+GET     /WiFi/Admin/{action}                   Admin.{action}
+POST    /WiFi/askLogin                         WiFi.askLogin
+GET     /WiFi/loggedIn                         WiFi.login
+GET	    /{<\d{12}>displayId}				   WiFi.displayId
 
-#GET     /                     controllers.Login.catchAll()
-
-# catch all
-#GET     *file                       controllers.Login.index(file)
+*       /.*                                    WiFi.catchAll
 
