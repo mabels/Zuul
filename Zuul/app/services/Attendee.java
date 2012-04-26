@@ -10,9 +10,6 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
-import org.carrot2.core.LanguageCode;
-import org.carrot2.text.linguistic.DefaultStemmerFactory;
-import org.carrot2.text.linguistic.IStemmer;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -332,17 +329,22 @@ public class Attendee {
     if (attendees == null) {
       init();
     }
+    
     class Stemmer {
-        final IStemmer stemmer = new DefaultStemmerFactory().getStemmer(LanguageCode.GERMAN);
+        //final IStemmer stemmer = new DefaultStemmerFactory().getStemmer(LanguageCode.GERMAN);
     	public String stem(String stem) {
+    		return stem;
+    		/*
     		CharSequence ret = stemmer.stem(stem);
     		if (ret == null) {
     			return stem;
     		}
     		return ret.toString();
+    		*/
     	}
     };
     final Stemmer stemmer = new Stemmer();   
+    
     final Collection<String> search = CollectionUtils.collect(
         Arrays.asList(str.toLowerCase().replace("-", "").split("\\s+")),
         new Transformer() {          
