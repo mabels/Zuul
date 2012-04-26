@@ -1,0 +1,55 @@
+Search
+
+<form action="/WiFi/Admin/search/service" >
+  <input type="text" placeholder="search" name="q" />
+</form>
+<a class="openNewAttendant" href="/WiFi/Admin/search/formAttendant">new</a>
+
+<table>
+<thead>
+<th>displayId</th>
+<th>Vorname</th>
+<th>Nachname</th>
+<th>Company</th>
+<th>email</th>
+</thead>
+<tbody>
+</tbody>
+</table>
+
+<script type="text/javascript" src="/WiFi/public/javascripts/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="/WiFi/public/javascripts/jquery-ui-1.8.19.custom.min.js"></script>
+<script>
+  $("input[name=q]").autocomplete({
+    source: function(e) {
+	  var $tbody = $('tbody')
+	  $tbody.empty();
+      if (this.term.length > 2) {
+        $.post($("form").attr("action"), {q:this.term}, function(data) { 
+          $tbody.append(data);
+        })
+      }
+    }
+  })
+  $('.openNewAttendant').click(function(e) {
+	e.preventDefault();
+    $('.formNewAttendant').remove();
+    $.get($(this).attr('href'), function(data) { 
+      var $form = $(data)
+      $form.bind('submit', function(e) {
+    	  e.preventDefault();
+    	  var data = $form.serializeArray();
+    	  console.log("DATA:", data); 
+    	  $.post($form.attr("action"), data, function(result) {
+    		  console.log("SUBMIT", result)
+    		  
+    	  })
+      })
+      $('body').append($form)
+    })
+
+  })
+  
+
+</script>
+

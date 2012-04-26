@@ -1,0 +1,18 @@
+
+meno
+<form action="/WiFi/askLogin" method="post">
+<br/>
+<input name="login.host" type="text" value="${request.headers.get("host").value()}" />
+<br/>
+<input name="login.remoteAddress" type="text" value="${request.remoteAddress}" />
+<br/>
+<input name="login.url" type="text" value="${request.url}" />
+<br/>
+<input name="login.secure" type="text" value="${request.secure}" />
+<br/>
+<input type="submit" value="Los" />
+</form>
+<script type="text/javascript"> 
+document.forms[0].submit()
+</script>
+
