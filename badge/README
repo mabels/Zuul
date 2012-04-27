@@ -1,0 +1,25 @@
+Prerequisites:
+  ruby: 1.9
+  gems: unicode_utils
+  apt: texlive-latex-base, texlive-latex-extra
+
+Example to stdout:
+  PATH_TO/badge -f FIRSTNAME -s SECONDNAME -l LASTNAME -c COMPANYNAME -a CATEGORY -q PATH_TO/qrCode.png | lpr
+
+Example to file:
+  PATH_TO/badge -f FIRSTNAME -s SECONDNAME -l LASTNAME -c COMPANYNAME -a CATEGORY -q PATH_TO/qrCode.png -o badge.pdf
+
+Example two days:
+  PATH_TO/badge -f FIRSTNAME -s SECONDNAME -l LASTNAME -c COMPANYNAME -a CATEGORY -q PATH_TO/qrCode.png -2 | lpr
+
+Example two days and VIP:
+  PATH_TO/badge -f FIRSTNAME -s SECONDNAME -l LASTNAME -c COMPANYNAME -a CATEGORY -q PATH_TO/qrCode.png -2 -i | lpr
+
+Example debug:
+
+  PATH_TO/badge -d -f FIRSTNAME -s SECONDNAME -l LASTNAME -c COMPANYNAME -a CATEGORY -2 -q PATH_TO/qrCode.png
+
+Help: 
+
+  PATH_TO/badge -h
+
