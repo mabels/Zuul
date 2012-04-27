@@ -1,9 +1,8 @@
 package controllers;
 
-import helpers.SpringUtils;
-
 import java.util.Collection;
 
+import helpers.SpringUtils;
 import play.Logger;
 import play.mvc.Controller;
 import services.Attendee;

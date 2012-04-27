@@ -15,6 +15,7 @@ POST     /WiFi/Admin/search/newAttendant        Admin.newAttendant
 GET     /WiFi/Admin/{action}                   Admin.{action}
 POST    /WiFi/askLogin                         WiFi.askLogin
 GET     /WiFi/loggedIn                         WiFi.login
+GET     /WiFi/qrCode                         WiFi.qrCode
 GET	    /{<\d{12}>displayId}				   WiFi.displayId
 
 *       /.*                                    WiFi.catchAll

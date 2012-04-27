@@ -6,3 +6,5 @@ require:
     - org.codehaus.jackson -> jackson-mapper-asl 1.9.6
     - commons-collections -> commons-collections 3.2.1
     - org.ektorp -> org.ektorp 1.2.2
+    - com.google.zxing -> core 2.0
+

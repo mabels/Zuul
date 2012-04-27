@@ -5,14 +5,16 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
+import services.Attendee.Attendant.Ticket.Tuple;
 
 public class Attendee {
 
@@ -329,33 +331,7 @@ public class Attendee {
     if (attendees == null) {
       init();
     }
-    
-    class Stemmer {
-        //final IStemmer stemmer = new DefaultStemmerFactory().getStemmer(LanguageCode.GERMAN);
-    	public String stem(String stem) {
-    		return stem;
-    		/*
-    		CharSequence ret = stemmer.stem(stem);
-    		if (ret == null) {
-    			return stem;
-    		}
-    		return ret.toString();
-    		*/
-    	}
-    };
-    final Stemmer stemmer = new Stemmer();   
-    
-    final Collection<String> search = CollectionUtils.collect(
-        Arrays.asList(str.toLowerCase().replace("-", "").split("\\s+")),
-        new Transformer() {          
-          @Override
-          public Object transform(Object arg0) {
-            String ret = stemmer.stem((String)arg0);
-            System.out.println("stem:"+ret);
-            return ret;
-          }
-        });
-    
+    final String[] search = str.toLowerCase().replace("-", "").split("\\s+");
     return CollectionUtils.collect(
         CollectionUtils.select(attendees, new Predicate() {
 
@@ -366,18 +342,18 @@ public class Attendee {
             for (String s : search) {
               if (ticket.getEmail() != null) {
                 for (String n : ticket.getEmail().toLowerCase().split("@")) {
-                  if (stemmer.stem(n).startsWith(s)) {
+                  if (n.startsWith(s)) {
                     return true;
                   }
                 }
               }
               for (String n : ticket.getLastName().toLowerCase().split("\\s+")) {
-                if (stemmer.stem(n).startsWith(s)) {
+                if (n.startsWith(s)) {
                   return true;
                 }
               }
               for (String n : ticket.getFirstName().toLowerCase().split("\\s+")) {
-                if (stemmer.stem(n).startsWith(s)) {
+                if (n.startsWith(s)) {
                   return true;
                 }
               }
