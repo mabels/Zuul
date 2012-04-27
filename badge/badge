@@ -1,0 +1,187 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require 'tmpdir'
+require 'optparse'
+require "unicode_utils/upcase"
+
+def batch_latex(options)
+  latex_code(options)
+end
+
+def latex_code(options)
+  DATA.readlines.join('').tap { |tex|
+    tex.gsub!(/@@EINS@@/) { t(UnicodeUtils.upcase options[:one]) }
+    tex.gsub!(/@@ZWEI@@/) { t(UnicodeUtils.upcase options[:two]) }
+    tex.gsub!(/@@DREI@@/) { t(UnicodeUtils.upcase options[:three]) }
+    tex.gsub!(/@@FIRMA@@/) { t(options[:company]) }
+    tex.gsub!(/@@KATEGORIE@@/) { t(options[:category]) }
+    tex.gsub!(/@@VIP@@/) { t(options[:vip] ? 'VIP' : '') }
+    tex.gsub!(/@@2DAYS@@/) { t(options[:two_days] ? '2DAYS' : '') }
+    tex.gsub!(/@@URL@@/) { options[:url] }
+    tex.gsub!(/@@QR_CODE_FILE@@/) { options[:qr_code_file] }
+    tex.gsub!(/@@INSTALL_DIR@@/) { options[:install_dir] }
+  }
+end
+
+def t(string)
+  string.tap { |str|
+    str.gsub!(/([\{\}])/) { |m| "\\#{m}" }
+    str.gsub!(/\\/) { '\\textbackslash{}' }
+    str.gsub!(/\^/) { '\\textasciicircum{}' }
+    str.gsub!(/\~/) { '\\textasciitilde{}' }
+    str.gsub!(/\|/) { '\\textbar{}' }
+    str.gsub!(/\</) { '\\textless{}' }
+    str.gsub!(/\>/) { '\\textgreater{}' }
+    str.gsub!(/([\_\$\#\&\%])/) { |m| "\\#{m}" }
+    # Comment in in case of paranoia:
+    # str.gsub!(/[^a-zA-Z0-9äöüÄÖÜßøØæÆ»«¢©]\\\/\^\~\|\<\>\_\$\{\}\#\&\%/, '')
+  }
+end
+
+options = {vip: false, two_days: false, debug: false, output: nil}
+options.default = ''
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} [options]"
+
+  opts.on("-f", "--firstname FIRSTNAME", "") do |val|
+    options[:one] = val
+  end
+  opts.on("-s", "--secondname [SECONDNAME]", "") do |val|
+    options[:two] = val
+  end
+  opts.on("-l", "--lastname LASTNAME", "") do |val|
+    options[:three] = val
+  end
+  opts.on("-c", "--company COMPANY", "") do |val|
+    options[:company] = val
+  end
+  opts.on("-a", "--category CATEGORY", "") do |val|
+    options[:category] = val
+  end
+  opts.on("-i", "--[no-]vip", "default is no vip") do |val|
+    options[:vip] = val
+  end
+  opts.on("-2", "--[no-]two_days", "default is one day only") do |val|
+    options[:two_days] = val
+  end
+  opts.on("-q", "--qr_code_file FILE", "") do |val|
+    options[:qr_code_file] = val
+  end
+  opts.on("-o", "--output FILE", "") do |val|
+    options[:output] = val
+  end  
+  opts.on("-d", "--[no-]debug", "") do |val|
+    options[:debug] = val
+  end  
+end.parse!
+
+TexFileName = 'badge.tex'
+PdfFileName = 'badge.pdf'
+OutFileName = 'badge.out'
+InstallDir = File.expand_path(File.dirname(__FILE__))
+
+options[:install_dir] = InstallDir
+
+Dir.mktmpdir { |tmp|
+  p = Dir.pwd
+  Dir.chdir(tmp)
+  File.open(TexFileName, 'w') do |f|
+    f.puts batch_latex(options)
+  end
+
+  system("pdflatex #{TexFileName} > #{OutFileName}")
+
+  if options[:output]
+    system("cp #{PdfFileName} #{p}/#{options[:output]}")
+  elsif options[:debug]
+    system("cat #{OutFileName}")    
+  else
+    system("cat #{PdfFileName}")
+  end
+}
+
+
+
+__END__
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphics}
+\usepackage{color}
+%\usepackage{pst-barcode}
+\usepackage{ifthen}
+
+\pagestyle{empty}
+
+\setlength{\voffset}{-1in}
+\setlength{\hoffset}{-1in}
+\setlength{\textwidth}{210mm}
+\setlength{\textheight}{297mm}
+\setlength{\topmargin}{0mm}
+\setlength{\leftmargin}{0mm}
+\setlength{\oddsidemargin}{0mm}
+\setlength{\evensidemargin}{0mm}
+\setlength{\headheight}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\parsep}{0cm}
+\setlength{\parindent}{0cm}
+
+\definecolor{blue}{cmyk}{1, 0.27, 0, 0.06}
+
+\newcommand{\badge}[9]{%
+  \B{#1}{#2}{#3}{#4}{#5}{#6}{#7}{#8}{#9}
+  \B{#1}{#2}{#3}{#4}{#5}{#6}{#7}{#8}{#9}
+  \newpage
+}
+
+\newcommand{\B}[9]{%
+  \parbox{105mm}{%
+    \parbox{0mm}{%
+      \includegraphics{#9/Hintergrund}%
+    }%
+    \parbox{0mm}{%
+      \raisebox{45mm}[0mm][0mm]{%
+        \rule{70mm}{0mm}%
+        \ifthenelse{\equal{#6}{VIP}}%
+                   {\includegraphics{#9/Kreis_pink}}%
+                   {\includegraphics{#9/Kreis_grau}}%
+      }%
+    }%
+    \parbox{0mm}{%
+      \raisebox{-68.5mm}[0mm][0mm]{%
+        \rule{5mm}{0mm}%
+        \ifthenelse{\equal{#7}{2DAYS}}%
+                   {\includegraphics{#9/Rahmen}}%
+                   {}%
+      }%
+    }%
+    \parbox{0mm}{%
+      \raisebox{-5mm}[0mm][0mm]{%
+        \rule{10mm}{0mm}%
+        \parbox{95mm}{%
+          { \fontsize{28}{30} \sffamily \bfseries
+            #1\\\\
+            #2\\\\
+            #3\\\\\\
+          }
+          { \fontsize{14}{24} \sffamily \bfseries
+            #4\\\\
+            \color{blue} #5
+          }
+        }
+      }
+    }
+    \parbox{0mm}{%
+      \raisebox{-35mm}[0mm][0mm]{%
+        \parbox[b]{97mm}{%
+          \raggedleft%
+          \resizebox{1in}{!}{\includegraphics{#8}}%
+         }
+      }
+    }
+  }
+}
+
+\begin{document}
+   \badge{@@EINS@@}{@@ZWEI@@}{@@DREI@@}{@@FIRMA@@}{@@KATEGORIE@@}{@@VIP@@}{@@2DAYS@@}{@@QR_CODE_FILE@@}{@@INSTALL_DIR@@}
+\end{document} 
