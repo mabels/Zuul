@@ -1,7 +1,6 @@
 package controllers;
 
 import helpers.ResolvArp;
-import helpers.SpringUtils;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -9,17 +8,15 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
+import play.cache.CacheFor;
 import play.mvc.Controller;
-import play.mvc.Http.Response;
-import play.mvc.Http.Request;
 import play.mvc.Http.Header;
-import services.Attendant;
-import services.Attendants;
+import play.mvc.Http.Request;
+import play.mvc.Http.Response;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -62,6 +59,7 @@ public class WiFi extends Controller {
     return bais;
   }
 
+  //@CacheFor("1h")
   public static void qrCode(String passPortId) throws WriterException, IOException {
     renderBinary(makeQrCode(passPortId, 200));
   }

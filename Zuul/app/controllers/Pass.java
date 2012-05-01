@@ -20,6 +20,8 @@ import services.Attendants;
 import services.PassPort;
 import services.PassPorter;
 
+import com.google.gson.Gson;
+
 public class Pass extends Controller {
 
   public static void app() {
@@ -27,6 +29,7 @@ public class Pass extends Controller {
     render();
   }
 
+  
   public static void displayId(String displayId) {
     System.err.println("Pass:displayId" + params.get("displayId"));
      
@@ -132,7 +135,7 @@ public class Pass extends Controller {
   }
 
   public static String tryLogin(String passPortId) {
-    play.Logger.info("grantAccess to=", passPortId);
+    play.Logger.info("grantAccess to="+passPortId);
     final PassPorter passPorter = SpringUtils.getInstance().getBean(
         PassPorter.class);
     PassPort passPort;
@@ -153,10 +156,16 @@ public class Pass extends Controller {
 
   public static void grantAccess() {
     String passPortId = params.get("passPortId");
-    String code = tryLogin(passPortId);
-    render(code);
+    render(passPortId);
   }
   
+  public static void grantAccessJsonp() {
+    String passPortId = params.get("passPortId");
+    String code = tryLogin(passPortId);
+    String json = new Gson().toJson(code);
+    render(json);
+  }
+
   public static void reloadMacs() {
     SpringUtils.getInstance().getBean(PassPorter.class).reloadMacs();
     render();

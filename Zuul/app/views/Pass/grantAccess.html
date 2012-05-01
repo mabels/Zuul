@@ -1,14 +1,36 @@
+#{extends 'main.html' /}
 
-You got access thank you
+<style type="text/css">
+.disable { display: none; }
+.granted { background: green; }
+.reject { background: red; }
+</style>
 
-${code}
+<div id="register">
+Registering...${passPortId}
+</div>
 
-<script>
-var dest = "/WiFi/askLogin"
-#{if code.equals("granted") }
-var dest = "http://dreisechsnull.telekom.de/"
-#{/if}
-setTimeout(function() {
-window.location.href=dest;
-}, 3000);
+<div id="done">
+
+</div>
+
+
+<script type="text/javascript">
+	function grantAccess(result) {
+		document.getElementById('register').setAttribute('class', 'disable');
+		var done = document.getElementById('done');
+		done.innerHTML = result;
+		
+		if (result == "granted") {
+			var dest = "http://dreisechsnull.telekom.de/"
+			done.setAttribute('class', 'granted')
+		} else {
+			var dest = "/WiFi/askLogin"
+			done.setAttribute('class', 'reject')
+		}
+		setTimeout(function() {
+			window.location.href=dest;
+		}, 3000);
+	}
 </script>
+<script type="text/javascript" src="/WiFi/Pass/port/${passPortId}?rand=${Math.random()}"></script>

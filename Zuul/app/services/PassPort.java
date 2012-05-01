@@ -31,31 +31,36 @@ public class PassPort extends CouchDbDocument {
     private static void iptables(String[] opts) {
       iptables(Arrays.asList(opts));
     }
+
     private static void iptables(Collection<String> opts) {
       List<String> cmd = new ArrayList<String>();
       cmd.add("/usr/bin/sudo");
       cmd.add("/sbin/iptables");
       cmd.addAll(opts);
-      
-			String str = StringUtils.join(cmd, " ");
-      play.Logger.info("Starting:"+str);
-      ProcessBuilder pb = new ProcessBuilder();
-      pb.command(cmd);
-      try {
-        Process p = pb.start();
-        //p.wait();
-      } catch (IOException e) {
-        play.Logger.error("Failed to start:IOException:"+str);
-      } 
+
+      String str = StringUtils.join(cmd, " ");
+      play.Logger.info("Starting:" + str + ":"
+          + play.Play.configuration.get("application.mode"));
+      if (play.Play.configuration.get("application.mode").equals("prod")) {
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.command(cmd);
+        try {
+          pb.start();
+        } catch (IOException e) {
+          play.Logger.error("Failed to start:IOException:" + str);
+        }
+      }
     }
+
     public static void clearIPTables() {
       iptables(new String[] { "-t", "mangle", "-F", "FREE_MACS" });
       iptables(new String[] { "-t", "mangle", "-A", "FREE_MACS", "-j", "RETURN" });
     }
-    
+
     private static final long serialVersionUID = 1L;
     private String ip;
     private String mac;
+
     public String getUpdated() {
       return updated;
     }
@@ -148,13 +153,15 @@ public class PassPort extends CouchDbDocument {
   }
 
   private static long transactionId = 0;
+
   public static long nextTransactionId() {
     return ++transactionId;
   }
+
   private static long getProcessID() {
     if (transactionId == 0) {
       RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
-      
+
       String jvmName = bean.getName();
       transactionId = Long.valueOf(jvmName.split("@")[0]);
     }
@@ -162,35 +169,30 @@ public class PassPort extends CouchDbDocument {
   }
 
   public boolean openFireWall() {
-      List<Ip2Mac> clients = this.getClients();
-      if (clients == null) {
-        return false;
-      }
-      String now = PassPort.getCurrentTimeStamp();
-      Long pid = PassPort.getProcessID();
-      boolean changed = false;
-      for(Ip2Mac client : clients) {
-        if (client.getPid() == pid) {
-          continue;
-        }
-        play.Logger.info("open fw for: ip("+client.getIp()+")mac("+client.getMac()+")");
-        for(String deladd : new String[] {"-D", "-I"}) {
-          PassPort.Ip2Mac.iptables(new String[] {
-              deladd,"FREE_MACS",
-              "-t", "mangle",
-              "-p", "all",
-              "-m", "mac",
-              "--mac-source", client.getMac(),
-              "-s", client.getIp(),
-              "-j", "MARK",
-              "--set-mark", "0x1205"
-          });   
-        }
-        changed = true;
-        client.setPid(pid);
-        client.setUpdated(now);
-      }
-      return changed;
+    List<Ip2Mac> clients = this.getClients();
+    if (clients == null) {
+      return false;
     }
+    String now = PassPort.getCurrentTimeStamp();
+    Long pid = PassPort.getProcessID();
+    boolean changed = false;
+    for (Ip2Mac client : clients) {
+      if (client.getPid() == pid) {
+        continue;
+      }
+      play.Logger.info("open fw for: ip(" + client.getIp() + ")mac("
+          + client.getMac() + ")");
+      for (String deladd : new String[] { "-D", "-I" }) {
+        PassPort.Ip2Mac.iptables(new String[] { deladd, "FREE_MACS", "-t",
+            "mangle", "-p", "all", "-m", "mac", "--mac-source",
+            client.getMac(), "-s", client.getIp(), "-j", "MARK", "--set-mark",
+            "0x1205" });
+      }
+      changed = true;
+      client.setPid(pid);
+      client.setUpdated(now);
+    }
+    return changed;
+  }
 
 }
