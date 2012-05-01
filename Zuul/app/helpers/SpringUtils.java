@@ -9,12 +9,17 @@ public class SpringUtils {
 
   private ApplicationContext context;
 
+  public ApplicationContext getContext() {
+    return context;
+  }
+
   public static SpringUtils getInstance() {
     return instance;
   }
 
   private SpringUtils() {
     context = new ClassPathXmlApplicationContext("context.xml");
+    //for(String s: context.getBeanDefinitionNames()) System.err.println("X:"+s);
   }
 
   public <T> T getBean(Class<T> type) {

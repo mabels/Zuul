@@ -1,5 +1,6 @@
 package controllers;
 
+import helpers.ResolvArp;
 import helpers.SpringUtils;
 
 import java.awt.Color;
@@ -8,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Hashtable;
 
@@ -16,7 +16,8 @@ import javax.imageio.ImageIO;
 
 import play.mvc.Controller;
 import play.mvc.Http.Response;
-import services.Attendee;
+import services.Attendant;
+import services.Attendants;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -27,13 +28,13 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 public class WiFi extends Controller {
 
-  public static void qrCode() throws IOException, WriterException {
+  public static ByteArrayInputStream makeQrCode(String passPortId, int size) throws WriterException, IOException {
     Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<EncodeHintType, ErrorCorrectionLevel>();
     hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
     QRCodeWriter qrCodeWriter = new QRCodeWriter();
-    BitMatrix bitMatrix = qrCodeWriter.encode("http://www.google.com",
-        BarcodeFormat.QR_CODE, 300, 300, hintMap);
+    BitMatrix bitMatrix = qrCodeWriter.encode("https://wifi.nextconf.eu/"
+        + passPortId, BarcodeFormat.QR_CODE, size, size, hintMap);
     // Make the BufferedImage that are to hold the QRCode
     int matrixWidth = bitMatrix.getWidth();
     BufferedImage image = new BufferedImage(matrixWidth, matrixWidth,
@@ -56,23 +57,17 @@ public class WiFi extends Controller {
     ImageIO.write(image, "png", baos);
     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
     Response.current().contentType = "image/png";
-    renderBinary(bais);
+    return bais;
+  }
+
+  public static void qrCode(String passPortId) throws WriterException, IOException {
+    renderBinary(makeQrCode(passPortId, 200));
   }
 
   public static void catchAll() {
     render();
   }
-
-  public static void displayId() {
-    final Collection<Attendee.Attendant.Ticket> result = SpringUtils
-        .getInstance().getBean(Attendee.class).find(params.get("displayId"));
-    if (result.size() > 0) {
-      Attendee.Attendant.Ticket ticket = result.iterator().next();
-      render(ticket);
-    } else {
-      render("WiFi/displayIdNotFound.html");
-    }
-  }
+  
 
   public static class Login {
     public String host;
@@ -80,17 +75,22 @@ public class WiFi extends Controller {
     public String url;
     public String secure;
     public String code;
+    public String macAddress;
     public Boolean granted = false;
   }
 
   public static void askLogin(Login login) {
     System.err.println("WIFI:login");
-    if (login.code != null &&
-
-    login.code.equals("meno")) {
-      login.granted = true;
-      render("WiFi/loggedIn.html", login);
-      return;
+    if (login.macAddress == null) {
+      login.macAddress = ResolvArp.ip2mac(login.remoteAddress);
+    }
+    if (login.code != null) {
+      String code = Pass.tryLogin(login.code.trim());
+      if (code.equals("granted")) {
+        login.granted = true;
+        redirect("/"+login.code);
+        return;
+      }
     }
     render(login);
   }

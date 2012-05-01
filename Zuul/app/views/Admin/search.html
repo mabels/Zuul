@@ -1,15 +1,29 @@
+#{extends 'main.html' /}
+
+<style type="text/css">
+.searchTable tbody tr:hover {
+	background: gray;
+}
+.printDialog { 
+	display: none; 
+}
+</style>
+
+
 Search
 
-<form action="/WiFi/Admin/search/service" >
+<form action="/WiFi/Admin/search/service"  class="searchForm" >
   <input type="text" placeholder="search" name="q" />
 </form>
 <a class="openNewAttendant" href="/WiFi/Admin/search/formAttendant">new</a>
 
-<table>
+<table class="searchTable">
 <thead>
 <th>displayId</th>
 <th>Vorname</th>
 <th>Nachname</th>
+
+
 <th>Company</th>
 <th>email</th>
 </thead>
@@ -17,10 +31,22 @@ Search
 </tbody>
 </table>
 
+<div class="printDialog">
+<table>
+</table>
+<form action="/WiFi/Admin/printBadge">
+<input type="submit" name="cancel" value="abbrechen" />
+<input type="submit" name="print" value="drucken" />
+</form>
+</div>
+
 <script type="text/javascript" src="/WiFi/public/javascripts/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="/WiFi/public/javascripts/jquery-ui-1.8.19.custom.min.js"></script>
 <script>
-  $("input[name=q]").autocomplete({
+  $('.searchForm').bind('submit', function(e) {
+	  e.preventDefault();
+  })
+  var $searchBox = $("input[name=q]").autocomplete({
     source: function(e) {
 	  var $tbody = $('tbody')
 	  $tbody.empty();
@@ -30,6 +56,37 @@ Search
         })
       }
     }
+  })
+  $('.printDialog form input').click(function(e) {
+	  e.preventDefault();
+	  var $my = $(this)
+	  var $printDialog = $my.closest('.printDialog');
+	  if ($my.attr('name') == "print") {
+		  console.log('printer');
+		  $.ajax({
+				url : $printDialog.find('form').attr('action'),
+				type: 'POST',
+				data : {
+					displayId : $printDialog.find('table tr').data('displayidentifier')
+				},
+				contentType: 'application/x-www-form-urlencoded',
+				error : function() {
+					alert('druck fehler bitte wiederholen');
+				},
+				success : function(data) {
+					$printDialog.hide();
+				}
+		 });
+	  } else {
+		  $printDialog.hide();
+	  }
+  })
+  $('.searchTable tbody tr').live('click', function() {
+	  $('.printDialog table').empty().append($(this).clone());
+	  $('.printDialog').show();
+	  
+	  console.log("JOJO")
+	  console.log($(this).data('displayidentifier'));
   })
   $('.openNewAttendant').click(function(e) {
 	e.preventDefault();
@@ -42,7 +99,9 @@ Search
     	  console.log("DATA:", data); 
     	  $.post($form.attr("action"), data, function(result) {
     		  console.log("SUBMIT", result)
-    		  
+    		  $('.formNewAttendant').remove();
+    		  $searchBox.val(result.id)
+    		  $searchBox.autocomplete('search', result.ticket.displayIdentifier)
     	  })
       })
       $('body').append($form)

@@ -1,0 +1,10 @@
+Hallo,
+
+wir schicken ihnen ein Email mit dem Zugangs Code fuer die
+Next:
+
+${passPort}
+
+${ticket.email}
+
+Danke

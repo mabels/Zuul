@@ -1,0 +1,14 @@
+
+You got access thank you
+
+${code}
+
+<script>
+var dest = "/WiFi/askLogin"
+#{if code.equals("granted") }
+var dest = "http://dreisechsnull.telekom.de/"
+#{/if}
+setTimeout(function() {
+window.location.href=dest;
+}, 3000);
+</script>

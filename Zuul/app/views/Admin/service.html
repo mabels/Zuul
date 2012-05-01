@@ -1,5 +1,5 @@
 #{list items:tickets, as:'ticket' }
-<tr>
+<tr data-displayidentifier="${ticket.getDisplayIdentifier()}">
 <td>${ticket.getDisplayIdentifier()}</td>
 <td>${ticket.getFirstName()}</td>
 <td>${ticket.getLastName()}</td>

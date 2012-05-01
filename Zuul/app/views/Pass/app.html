@@ -1,0 +1,111 @@
+#{extends 'main.html' /}
+
+<style type="text/css">
+.texts {
+	display: none;
+}
+
+.texts.active {
+	display: block;
+}
+</style>
+
+LOGO-Powered by
+
+<div id="idleText" class="texts active">Hier wird Ihnen der
+	Zugangskode fuer das WiFi erzeugt bitte halten Sie ihren Badge vor die
+	Kamera.</div>
+
+<div id="createPassport" class="texts">Ein Zugangskode fuer das
+	Wifi wird erzeugt...bitte warten</div>
+
+<div id="printPassport" class="texts">ihr Zugangscode wird
+	gedruckt</div>
+
+<div id="printedPassport" class="texts">ihr Zugangscode wurde
+	gedruckt.</div>
+
+<div id="Passport" class="texts">ihr Zugangscode wird gedruckt</div>
+
+<div id="State"></div>
+
+<script type="text/javascript"
+	src="/WiFi/public/javascripts/jquery-1.7.2.min.js"></script>
+
+<script type="text/javascript">
+	var $theHash = $("#theHash")
+	$theHash.append("Started" + window.location.hash);
+
+	var activeDisplayId = null;
+	var nextTimer = null;
+	var printed = false;
+
+	function nativeCallback(url) {
+		var backToIdle = function() {
+			activeDisplayId = null;
+			printed = false;
+			nextTimer = null
+			$('.texts.active').removeClass('active');
+			$('#idleText').addClass('active')
+			$('#State').empty().append('idle');
+		}
+
+		if (url == "print" && activeDisplayId && !printed) {
+			$('#State').empty().append('starting Print');
+
+			$('.texts.active').removeClass("active");
+			$('#printPassport').addClass("active")
+			nextTimer && clearTimeout(nextTimer);
+			nextTimer = null;
+			printed = true
+			$.ajax({
+				url : 'print',
+				type: 'POST',
+				data : {
+					displayId : activeDisplayId
+				},
+				contentType: 'application/x-www-form-urlencoded',
+				error : backToIdle,
+				success : function(data) {
+					$('.texts.active').removeClass("active");
+					$('#printedPassport').addClass('active');
+					nextTimer = setTimeout(backToIdle, 3000);
+				}
+			});
+		} else if (url == "next") {
+			backToIdle();
+		} else {
+			var matcher = url.match(/^http[s]*:\/\/wifi.nextconf.eu\/(\d{12})$/)
+			if (matcher && matcher[1] == activeDisplayId) {
+				activeDisplayId = matcher[1]
+				nextTimer && clearTimeout(nextTimer);
+				nextTimer = null;
+				nextTimer = setTimeout(backToIdle, 5000);
+			} else if (matcher && matcher[1] != activeDisplayId) {
+				activeDisplayId = matcher[1]
+				$('#State').empty().append('createPassport:' + activeDisplayId);
+				nextTimer && clearTimeout(nextTimer);
+				nextTimer = null;
+				$('.texts.active').removeClass('active');
+				$('#createPassport').addClass('active')
+				$.ajax({
+					url : "create",
+					type: 'POST',
+					data : {
+						displayId : activeDisplayId
+					},
+					contentType: 'application/x-www-form-urlencoded',
+					error : backToIdle,
+					success : function(data) {
+						$('.texts.active').removeClass('active');
+						$('#Passport').empty().append(data).addClass('active');
+						$('#State').empty().append('showPassport');
+						nextTimer = setTimeout(backToIdle, 5000);
+					}
+				});
+			} else {
+				activeDisplayId = null;
+			}
+		}
+	}
+</script>

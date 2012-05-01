@@ -1,0 +1,343 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		183E02B4154945C400A6C06D /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183E02B3154945C400A6C06D /* CoreVideo.framework */; };
+		183E02B715495A8300A6C06D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183E02B615495A8300A6C06D /* WebKit.framework */; };
+		183E02FD154978AA00A6C06D /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183E02FC154978AA00A6C06D /* CoreMedia.framework */; };
+		E9C967D3137B516200C6D18B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C967D2137B516200C6D18B /* Cocoa.framework */; };
+		E9C967DD137B516200C6D18B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E9C967DB137B516200C6D18B /* InfoPlist.strings */; };
+		E9C967DF137B516200C6D18B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C967DE137B516200C6D18B /* main.m */; };
+		E9C967E6137B516200C6D18B /* CameraDisplayDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9C967E5137B516200C6D18B /* CameraDisplayDocument.mm */; };
+		E9C967E9137B516200C6D18B /* CameraDisplayDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9C967E7137B516200C6D18B /* CameraDisplayDocument.xib */; };
+		E9C967EC137B516200C6D18B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9C967EA137B516200C6D18B /* MainMenu.xib */; };
+		E9C967F8137B51A700C6D18B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C967F7137B51A700C6D18B /* AVFoundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		183E02B3154945C400A6C06D /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		183E02B615495A8300A6C06D /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		183E02FC154978AA00A6C06D /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		E9C967CE137B516200C6D18B /* CameraDisplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraDisplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9C967D2137B516200C6D18B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		E9C967DA137B516200C6D18B /* CameraDisplay-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CameraDisplay-Info.plist"; sourceTree = "<group>"; };
+		E9C967DC137B516200C6D18B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E9C967DE137B516200C6D18B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E9C967E0137B516200C6D18B /* CameraDisplay-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CameraDisplay-Prefix.pch"; sourceTree = "<group>"; };
+		E9C967E4137B516200C6D18B /* CameraDisplayDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraDisplayDocument.h; sourceTree = "<group>"; };
+		E9C967E5137B516200C6D18B /* CameraDisplayDocument.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CameraDisplayDocument.mm; sourceTree = "<group>"; };
+		E9C967E8137B516200C6D18B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CameraDisplayDocument.xib; sourceTree = "<group>"; };
+		E9C967EB137B516200C6D18B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		E9C967F7137B51A700C6D18B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E9C967CB137B516200C6D18B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				183E02FD154978AA00A6C06D /* CoreMedia.framework in Frameworks */,
+				183E02B715495A8300A6C06D /* WebKit.framework in Frameworks */,
+				183E02B4154945C400A6C06D /* CoreVideo.framework in Frameworks */,
+				E9C967F8137B51A700C6D18B /* AVFoundation.framework in Frameworks */,
+				E9C967D3137B516200C6D18B /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E9C967C3137B516100C6D18B = {
+			isa = PBXGroup;
+			children = (
+				E9C967D8137B516200C6D18B /* CameraDisplay */,
+				E9C967D1137B516200C6D18B /* Frameworks */,
+				E9C967CF137B516200C6D18B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E9C967CF137B516200C6D18B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E9C967CE137B516200C6D18B /* CameraDisplay.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E9C967D1137B516200C6D18B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				183E02B615495A8300A6C06D /* WebKit.framework */,
+				183E02FC154978AA00A6C06D /* CoreMedia.framework */,
+				183E02B3154945C400A6C06D /* CoreVideo.framework */,
+				E9C967F7137B51A700C6D18B /* AVFoundation.framework */,
+				E9C967D2137B516200C6D18B /* Cocoa.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E9C967D8137B516200C6D18B /* CameraDisplay */ = {
+			isa = PBXGroup;
+			children = (
+				E9C967E4137B516200C6D18B /* CameraDisplayDocument.h */,
+				E9C967E5137B516200C6D18B /* CameraDisplayDocument.mm */,
+				E9C967E7137B516200C6D18B /* CameraDisplayDocument.xib */,
+				E9C967EA137B516200C6D18B /* MainMenu.xib */,
+				E9C967D9137B516200C6D18B /* Supporting Files */,
+			);
+			path = CameraDisplay;
+			sourceTree = "<group>";
+		};
+		E9C967D9137B516200C6D18B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E9C967DA137B516200C6D18B /* CameraDisplay-Info.plist */,
+				E9C967DB137B516200C6D18B /* InfoPlist.strings */,
+				E9C967DE137B516200C6D18B /* main.m */,
+				E9C967E0137B516200C6D18B /* CameraDisplay-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E9C967CD137B516200C6D18B /* CameraDisplay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E9C967EF137B516200C6D18B /* Build configuration list for PBXNativeTarget "CameraDisplay" */;
+			buildPhases = (
+				E9C967CA137B516200C6D18B /* Sources */,
+				E9C967CB137B516200C6D18B /* Frameworks */,
+				E9C967CC137B516200C6D18B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CameraDisplay;
+			productName = CameraDisplay;
+			productReference = E9C967CE137B516200C6D18B /* CameraDisplay.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E9C967C5137B516100C6D18B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = E9C967C8137B516100C6D18B /* Build configuration list for PBXProject "CameraDisplay" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E9C967C3137B516100C6D18B;
+			productRefGroup = E9C967CF137B516200C6D18B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E9C967CD137B516200C6D18B /* CameraDisplay */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E9C967CC137B516200C6D18B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9C967DD137B516200C6D18B /* InfoPlist.strings in Resources */,
+				E9C967E9137B516200C6D18B /* CameraDisplayDocument.xib in Resources */,
+				E9C967EC137B516200C6D18B /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E9C967CA137B516200C6D18B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9C967DF137B516200C6D18B /* main.m in Sources */,
+				E9C967E6137B516200C6D18B /* CameraDisplayDocument.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E9C967DB137B516200C6D18B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E9C967DC137B516200C6D18B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		E9C967E7137B516200C6D18B /* CameraDisplayDocument.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E9C967E8137B516200C6D18B /* en */,
+			);
+			name = CameraDisplayDocument.xib;
+			sourceTree = "<group>";
+		};
+		E9C967EA137B516200C6D18B /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E9C967EB137B516200C6D18B /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E9C967ED137B516200C6D18B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
+				OTHER_LDFLAGS = "";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E9C967EE137B516200C6D18B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
+				OTHER_LDFLAGS = "";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E9C967F0137B516200C6D18B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CameraDisplay/CameraDisplay-Prefix.pch";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "CameraDisplay/CameraDisplay-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/CameraDisplay\"",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-I/Users/menabe/macosx/include",
+				);
+				OTHER_LDFLAGS = (
+					"-L/Users/menabe/macosx/lib",
+					"-lzbar",
+					"-liconv",
+					"-lpthread",
+				);
+				PRODUCT_NAME = CameraDisplay;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		E9C967F1137B516200C6D18B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CameraDisplay/CameraDisplay-Prefix.pch";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "CameraDisplay/CameraDisplay-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/CameraDisplay\"",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-I/Users/menabe/macosx/include",
+				);
+				OTHER_LDFLAGS = (
+					"-L/Users/menabe/macosx/lib",
+					"-lzbar",
+					"-liconv",
+					"-lpthread",
+				);
+				PRODUCT_NAME = CameraDisplay;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E9C967C8137B516100C6D18B /* Build configuration list for PBXProject "CameraDisplay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9C967ED137B516200C6D18B /* Debug */,
+				E9C967EE137B516200C6D18B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E9C967EF137B516200C6D18B /* Build configuration list for PBXNativeTarget "CameraDisplay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9C967F0137B516200C6D18B /* Debug */,
+				E9C967F1137B516200C6D18B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E9C967C5137B516100C6D18B /* Project object */;
+}
