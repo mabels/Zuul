@@ -16,6 +16,8 @@ import javax.imageio.ImageIO;
 
 import play.mvc.Controller;
 import play.mvc.Http.Response;
+import play.mvc.Http.Request;
+import play.mvc.Http.Header;
 import services.Attendant;
 import services.Attendants;
 
@@ -64,18 +66,53 @@ public class WiFi extends Controller {
     renderBinary(makeQrCode(passPortId, 200));
   }
 
+  /*
+                     proxy_set_header  X-Real-Scheme $scheme;
+                      proxy_set_header  X-Real-IP     $remote_addr;
+                      proxy_set_header  X-Real-Host   $http_host;
+                      proxy_set_header  X-Real-Uri    $request_uri;
+   */
   public static void catchAll() {
-    render();
+		Login login = new Login(request);
+    render(login);
   }
   
 
   public static class Login {
+		public Login(Request request) {
+			Header xRealScheme = request.headers.get("x-real-scheme");
+			if (xRealScheme != null) {
+				this.secure = xRealScheme.value();
+			} else {
+				this.secure = request.secure ? "https" : "http";
+			}
+			Header xRealIp = request.headers.get("x-real-ip");
+			if (xRealIp != null) {
+				this.remoteAddress = xRealIp.value();
+			} else {
+				this.remoteAddress = request.remoteAddress;
+			}
+			Header xRealHost = request.headers.get("x-real-host");
+			if (xRealHost != null) {
+				this.host = xRealHost.value();
+			} else {
+				this.host = request.headers.get("host").value();
+			}
+			Header xRealUri = request.headers.get("x-real-uri");
+			if (xRealUri != null) {
+				this.url = xRealUri.value();
+			} else {
+				this.url = request.url;
+			}
+			this.appUrl = "https://wifi.nextconf.eu/WiFi/askLogin";
+    }
+		public String appUrl;
     public String host;
     public String remoteAddress;
     public String url;
     public String secure;
-    public String code;
     public String macAddress;
+		public String code;
     public Boolean granted = false;
   }
 

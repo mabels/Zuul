@@ -30,7 +30,7 @@ public class PassPort extends CouchDbDocument {
     }
     private static void iptables(String[] opts) {
       StringBuilder sb = new StringBuilder();
-      sb.append("/sbin/iptables");
+      sb.append("/usr/bin/sudo /sbin/iptables");
       for (String opt : opts) {
         sb.append(" ");
         sb.append(opt);
@@ -169,7 +169,7 @@ public class PassPort extends CouchDbDocument {
           continue;
         }
         play.Logger.info("open fw for: ip("+client.getIp()+")mac("+client.getMac()+")");
-        for(String deladd : new String[] {"-D", "-A"}) {
+        for(String deladd : new String[] {"-D", "-I"}) {
           PassPort.Ip2Mac.iptables(new String[] {
               deladd,"FREE_MACS",
               "-t", "mangle",

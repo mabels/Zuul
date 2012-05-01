@@ -22,7 +22,7 @@
 	<util:properties id="couchdbProperties" location="classpath:/couchdb.properties"/>
 
 
-    <couchdb:instance id="fulcrum" url="http://192.168.176.1:5984" properties="couchdbProperties" />
+    <couchdb:instance id="fulcrum" url="http://127.0.0.1:5984" properties="couchdbProperties" />
 
     <couchdb:database id="passPorterDatabase" name="passes"  instance-ref="fulcrum" />
     <couchdb:database id="attendantsDatabase" name="attendants"  instance-ref="fulcrum" />

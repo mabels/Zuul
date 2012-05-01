@@ -142,12 +142,13 @@ public class Pass extends Controller {
       return "code not found";
     }
     /* Test Code */
-    if (request.remoteAddress.equals("127.0.0.1") || 
-        request.remoteAddress.equals("0:0:0:0:0:0:0:1")) {
-      request.remoteAddress = "192.168.176.113";
+		WiFi.Login login = new WiFi.Login(request);
+    if (login.remoteAddress.equals("127.0.0.1") || 
+        login.remoteAddress.equals("0:0:0:0:0:0:0:1")) {
+      login.remoteAddress = "192.168.176.113";
     }
-    return passPorter.assignClient(passPort, request.remoteAddress,
-        ResolvArp.ip2mac(request.remoteAddress));
+    return passPorter.assignClient(passPort, login.remoteAddress,
+        ResolvArp.ip2mac(login.remoteAddress));
   }
 
   public static void grantAccess() {

@@ -89,12 +89,8 @@ LOGO-Powered by
 				$('.texts.active').removeClass('active');
 				$('#createPassport').addClass('active')
 				$.ajax({
-					url : "create",
-					type: 'POST',
-					data : {
-						displayId : activeDisplayId
-					},
-					contentType: 'application/x-www-form-urlencoded',
+					url : "/"+activeDisplayId,
+					type: 'GET',
 					error : backToIdle,
 					success : function(data) {
 						$('.texts.active').removeClass('active');
