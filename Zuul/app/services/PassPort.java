@@ -142,11 +142,18 @@ public class PassPort extends CouchDbDocument {
     return strDate;
   }
 
+  private static long transactionId = 0;
+  public static long nextTransactionId() {
+    return ++transactionId;
+  }
   private static long getProcessID() {
-    RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
-
-    String jvmName = bean.getName();
-    return Long.valueOf(jvmName.split("@")[0]);
+    if (transactionId == 0) {
+      RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
+      
+      String jvmName = bean.getName();
+      transactionId = Long.valueOf(jvmName.split("@")[0]);
+    }
+    return transactionId;
   }
 
   public boolean openFireWall() {

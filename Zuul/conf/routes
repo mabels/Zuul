@@ -12,6 +12,7 @@ GET 	/WiFi/Pass/app					   Pass.app
 POST    /WiFi/Pass/create				        Pass.create
 GET     /WiFi/Pass/create/{<\d{12}>displayId}   Pass.create
 POST    /WiFi/Pass/print				   Pass.print
+GET     /WiFi/Pass/reloadMacs			   Pass.reloadMacs	
 
 # Catch all
 POST     /WiFi/Admin/search/service            Admin.service

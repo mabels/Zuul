@@ -155,7 +155,13 @@ public class Pass extends Controller {
     String code = tryLogin(passPortId);
     render(code);
   }
+  
+  public static void reloadMacs() {
+    PassPort.Ip2Mac.reloadMacs();
+    render();
+  }
   /*
+   * 
    * final Collection<Attendee.Attendant.Ticket> result = SpringUtils
    * .getInstance().getBean(Attendee.class).find(params.get("displayId")); if
    * (result.size() > 0) { Attendee.Attendant.Ticket ticket =

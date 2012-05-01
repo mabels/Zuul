@@ -211,25 +211,42 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     })).start();
   }
 
-  private void initialLoader(final BlockingQueue<Runnable> q) {
-    PassPort.Ip2Mac.clearIPTables();
-    q.addAll(CollectionUtils.collect(this.getAll(), new Transformer() {
-
-      @Override
-      public Object transform(Object arg0) {
-        final PassPort pp = (PassPort) arg0;
-        return new Runnable() {
-
-          @Override
-          public void run() {
-            if (pp.openFireWall()) {
-              db.update(pp);
-            }
-          }
-        };
-      }
-    }));
+  public void reloadMacs() {
+    PassPort.nextTransactionId(); // force reload
+    initialLoader(q);
   }
+
+  private void initialLoader(final BlockingQueue<Runnable> q) {
+    synchronized (q) {
+      final PassPorter my = this;
+      (new Thread(new Runnable() {
+
+        @Override
+        public void run() {
+          PassPort.Ip2Mac.clearIPTables();
+          q.addAll(CollectionUtils.collect(my.getAll(), new Transformer() {
+
+            @Override
+            public Object transform(Object arg0) {
+              final PassPort pp = (PassPort) arg0;
+              return new Runnable() {
+
+                @Override
+                public void run() {
+                  if (pp.openFireWall()) {
+                    db.update(pp);
+                  }
+                }
+              };
+            }
+          }));
+
+        }
+      })).start();
+    }
+  }
+
+  private final BlockingQueue<Runnable> q = new LinkedBlockingQueue<Runnable>();
 
   private void feedChanges() {
     final PassPorter my = this;
@@ -238,10 +255,10 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
       public void run() {
         play.Logger.info("started feedChanges" + db.getDatabaseName());
         long seq = db.getDbInfo().getUpdateSeq();
-        ChangesCommand cmd = new ChangesCommand.Builder().since(seq).heartbeat(10).build();
+        ChangesCommand cmd = new ChangesCommand.Builder().since(seq)
+            .heartbeat(10).build();
         ChangesFeed feed = db.changesFeed(cmd);
 
-        final BlockingQueue<Runnable> q = new LinkedBlockingQueue<Runnable>();
         initialLoader(q);
         processor(q);
         processor(q);
@@ -265,6 +282,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
             play.Logger.error("changes feed aborted", e);
           }
         }
+
       }
     })).start();
   }
