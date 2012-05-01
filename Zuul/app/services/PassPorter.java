@@ -5,14 +5,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.ektorp.CouchDbConnector;
+import org.ektorp.DbInfo;
+import org.ektorp.DocumentNotFoundException;
 import org.ektorp.DocumentOperationResult;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
+import org.ektorp.changes.ChangesCommand;
+import org.ektorp.changes.ChangesFeed;
+import org.ektorp.changes.DocumentChange;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.GenerateView;
 import org.ektorp.support.View;
@@ -34,7 +41,8 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
   @Autowired
   public PassPorter(@Qualifier("passPorterDatabase") CouchDbConnector db) {
     super(PassPort.class, db);
-    System.err.println("PassPorter construct");
+
+    play.Logger.info("PassPorter construct");
     initStandardDesignDocument();
   }
 
@@ -46,13 +54,14 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
   public interface FirstTime {
     public void run(PassPort pp);
   }
+
   @View(name = "getUnusedKeyCodes", map = "function(doc) { if (!doc.used) emit(doc._id, null) }")
   public PassPort createPass(String displayId, FirstTime firstTime) {
     List<PassPort> passPort = findByDisplayId(displayId);
     if (!passPort.isEmpty()) {
       return passPort.get(0);
     }
-   
+
     while (true) {
       ViewQuery q = createQuery("getUnusedKeyCodes").includeDocs(true).limit(1);
       List<PassPort> codes = db.queryView(q, PassPort.class);
@@ -77,14 +86,13 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     }
   }
 
-  
   @GenerateView
   @Override
   public List<PassPort> getAll() {
     ViewQuery q = createQuery("all").includeDocs(true);
     return db.queryView(q, PassPort.class);
   }
-  
+
   @View(name = "getUnusedKeyCount", map = "function(doc) { if (!doc.used) emit(doc._id, null) }", reduce = "_count")
   public int getUnusedKeyCount() {
     ViewResult r = db.queryView(createQuery("getUnusedKeyCount"));
@@ -97,7 +105,8 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
 
   @Override
   public void afterPropertiesSet() throws Exception {
-    System.err.println("PassPorter init");
+    play.Logger.info("PassPorter init");
+    feedChanges();
     new Thread(new Runnable() {
 
       @Override
@@ -118,7 +127,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
                   }
                   if (code.length() >= 5) {
                     codes.add(code);
-                    System.err.println("DOIT:" + code);
+                    play.Logger.info("DOIT:" + code);
                     break;
                   }
                   val = val >> 5;
@@ -153,8 +162,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     }).start();
 
   }
-  
-  
+
   public String assignClient(PassPort pp, String ip, String mac) {
     if (ip == null) {
       return "no ip found";
@@ -165,7 +173,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     if (pp.getClients() == null) {
       pp.setClients(new ArrayList<PassPort.Ip2Mac>(3));
     }
-    for(Ip2Mac im : pp.getClients()) {
+    for (Ip2Mac im : pp.getClients()) {
       if (im.getIp().equals(ip) && im.getMac().equals(mac)) {
         return "granted";
       }
@@ -181,5 +189,84 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     return "granted";
   }
 
+  private void processor(final BlockingQueue<Runnable> q) {
+    (new Thread(new Runnable() {
+
+      @Override
+      public void run() {
+        try {
+          while (true) {
+            Runnable run;
+            run = q.take();
+            if (run != null) {
+              run.run();
+            } else {
+              play.Logger.info("BlockingQueue return null");
+            }
+          }
+        } catch (InterruptedException e) {
+          play.Logger.info("processor: q.take got abort", e);
+        }
+      }
+    })).start();
+  }
+
+  private void initialLoader(final BlockingQueue<Runnable> q) {
+    PassPort.Ip2Mac.clearIPTables();
+    q.addAll(CollectionUtils.collect(this.getAll(), new Transformer() {
+
+      @Override
+      public Object transform(Object arg0) {
+        final PassPort pp = (PassPort) arg0;
+        return new Runnable() {
+
+          @Override
+          public void run() {
+            if (pp.openFireWall()) {
+              db.update(pp);
+            }
+          }
+        };
+      }
+    }));
+  }
+
+  private void feedChanges() {
+    final PassPorter my = this;
+    (new Thread(new Runnable() {
+      @Override
+      public void run() {
+        play.Logger.info("started feedChanges" + db.getDatabaseName());
+        long seq = db.getDbInfo().getUpdateSeq();
+        ChangesCommand cmd = new ChangesCommand.Builder().since(seq).heartbeat(10).build();
+        ChangesFeed feed = db.changesFeed(cmd);
+
+        final BlockingQueue<Runnable> q = new LinkedBlockingQueue<Runnable>();
+        initialLoader(q);
+        processor(q);
+        processor(q);
+        while (feed.isAlive()) {
+          try {
+            final DocumentChange dc = feed.next();
+            q.add(new Runnable() {
+
+              @Override
+              public void run() {
+                if (dc.isDeleted()) {
+                  return;
+                }
+                PassPort pp = my.get(dc.getId());
+                if (pp.openFireWall()) {
+                  db.update(pp);
+                }
+              }
+            });
+          } catch (InterruptedException e) {
+            play.Logger.error("changes feed aborted", e);
+          }
+        }
+      }
+    })).start();
+  }
 
 }

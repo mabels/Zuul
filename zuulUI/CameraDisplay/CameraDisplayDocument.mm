@@ -79,7 +79,7 @@ NSString* const CameraDisplayDocumentUpdateWebView = @"CameraDisplayDocumentUpda
 	self = [super init];
 	if (self) {
         
-        baseUrl = @"http://localhost:9000/WiFi/Pass/app";
+        baseUrl = @"http://wifi.nextconf.eu/WiFi/Pass/app";
 		// Create a capture session
 		session = [[AVCaptureSession alloc] init];
         
