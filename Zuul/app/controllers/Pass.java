@@ -141,10 +141,10 @@ public class Pass extends Controller {
     try {
       passPort = passPorter.get(passPortId);
 			if (passPort.getDisplayId() == null) {
-      	return "code not found";
+      	return "code not found(no displayId)";
 			}
     } catch (DocumentNotFoundException e) {
-      	return "code not found";
+      	return "code not found(id not found)";
     }
     /* Test Code */
 		WiFi.Login login = new WiFi.Login(request);

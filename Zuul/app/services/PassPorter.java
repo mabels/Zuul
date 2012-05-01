@@ -175,6 +175,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     }
     for (Ip2Mac im : pp.getClients()) {
       if (im.getIp().equals(ip) && im.getMac().equals(mac)) {
+				play.Logger.info("ip2mac is registered");
         return "granted";
       }
     }
@@ -186,6 +187,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     i2m.setMac(mac);
     pp.getClients().add(i2m);
     db.update(pp);
+		play.Logger.info("ip2mac store");
     return "granted";
   }
 
