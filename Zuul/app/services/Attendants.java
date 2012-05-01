@@ -19,7 +19,7 @@ public class Attendants extends CouchDbRepositorySupport<Attendant> {
   @Autowired
   public Attendants(@Qualifier("attendantsDatabase") CouchDbConnector db) {
     super(Attendant.class, db);
-    System.err.println("Attendant construct");
+    play.Logger.info("Attendant construct");
     initStandardDesignDocument();
   }
 
@@ -38,7 +38,7 @@ public class Attendants extends CouchDbRepositorySupport<Attendant> {
       attendant.setId(did);
       try {
         db.create(attendant);
-        System.err.println("createAttendant:"+did);
+        play.Logger.info("createAttendant:"+did);
         return true;
       } catch (UpdateConflictException e) {
         try {

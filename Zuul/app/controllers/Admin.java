@@ -47,7 +47,7 @@ public class Admin extends Controller {
   }
   
   public static void printBadge() throws Exception {
-    System.err.println("Admin:print" + params.get("displayId"));
+    play.Logger.info("Admin:print" + params.get("displayId"));
     
     final Attendant attendant = SpringUtils.getInstance()
         .getBean(Attendants.class)
@@ -79,7 +79,7 @@ public class Admin extends Controller {
     pb.command(sb);
     pb.directory(new File("/Users/menabe/Software/Zuul/badge"));
     Process p = pb.start();
-    IO.copy(p.getInputStream(), System.err);
+    //IO.copy(p.getInputStream(), System.err);
     // p.wait(10000);
     // p.destroy();
     render();

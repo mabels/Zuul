@@ -39,17 +39,37 @@ public class PassPort extends CouchDbDocument {
       cmd.addAll(opts);
 
       String str = StringUtils.join(cmd, " ");
-      play.Logger.info("Starting:" + str + ":"
-          + play.Play.configuration.get("application.mode"));
+      play.Logger.info("Starting:" + str + ":" + play.Play.configuration.get("application.mode"));
       if (play.Play.configuration.get("application.mode").equals("prod")) {
-        ProcessBuilder pb = new ProcessBuilder();
-        pb.command(cmd);
-        try {
-          pb.start();
-        } catch (IOException e) {
-          play.Logger.error("Failed to start:IOException:" + str);
-        }
-      }
+				cmdProcessor(cmd);
+			}
+	  }
+
+		private static void conntrackClean(String ip) {
+      List<String> cmd = new ArrayList<String>();
+      cmd.add("/usr/bin/sudo");
+      cmd.add("/usr/sbin/conntrack");
+      cmd.add("-D");
+      cmd.add("-s");
+      cmd.add(ip);
+      cmd.add("-r");
+      cmd.add("10.24.66.1");
+      cmd.add("-m");
+      cmd.add("9232");
+			cmdProcessor(cmd);
+		}
+
+		private static void cmdProcessor(List<String> cmd) {
+			String str = StringUtils.join(cmd, " ");
+      play.Logger.info("Starting:"+str);
+      ProcessBuilder pb = new ProcessBuilder();
+      pb.command(cmd);
+      try {
+        Process p = pb.start();
+        //p.wait();
+      } catch (IOException e) {
+        play.Logger.error("Failed to start:IOException:"+str);
+      } 
     }
 
     public static void clearIPTables() {
@@ -168,7 +188,7 @@ public class PassPort extends CouchDbDocument {
     return transactionId;
   }
 
-  public boolean openFireWall() {
+  public boolean openFireWall(boolean conntrack) {
     List<Ip2Mac> clients = this.getClients();
     if (clients == null) {
       return false;
@@ -180,8 +200,10 @@ public class PassPort extends CouchDbDocument {
       if (client.getPid() == pid) {
         continue;
       }
-      play.Logger.info("open fw for: ip(" + client.getIp() + ")mac("
-          + client.getMac() + ")");
+      if (conntrack) { 
+        PassPort.Ip2Mac.conntrackClean(client.getIp());
+      }
+      play.Logger.info("open fw for: ip(" + client.getIp() + ")mac(" + client.getMac() + ")");
       for (String deladd : new String[] { "-D", "-I" }) {
         PassPort.Ip2Mac.iptables(new String[] { deladd, "FREE_MACS", "-t",
             "mangle", "-p", "all", "-m", "mac", "--mac-source",

@@ -8,7 +8,7 @@ public class Bootstrap extends Job {
 
     public void doJob() {
       PassPorter obj = SpringUtils.getInstance().getBean(PassPorter.class);
-      System.err.println("BOOT:"+obj);
+      play.Logger.info("BOOT:"+obj);
       obj.findByDisplayId("-");
    }    
 }

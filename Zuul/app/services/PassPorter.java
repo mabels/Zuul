@@ -233,7 +233,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
 
                 @Override
                 public void run() {
-                  if (pp.openFireWall()) {
+                  if (pp.openFireWall(false)) {
                     db.update(pp);
                   }
                 }
@@ -273,7 +273,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
                   return;
                 }
                 PassPort pp = my.get(dc.getId());
-                if (pp.openFireWall()) {
+                if (pp.openFireWall(true)) {
                   db.update(pp);
                 }
               }

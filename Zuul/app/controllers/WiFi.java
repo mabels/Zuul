@@ -115,7 +115,7 @@ public class WiFi extends Controller {
   }
 
   public static void askLogin(Login login) {
-    System.err.println("WIFI:login");
+    play.Logger.info("WIFI:login");
     if (login.macAddress == null) {
       login.macAddress = ResolvArp.ip2mac(login.remoteAddress);
     }

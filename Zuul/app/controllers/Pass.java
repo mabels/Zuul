@@ -25,13 +25,13 @@ import com.google.gson.Gson;
 public class Pass extends Controller {
 
   public static void app() {
-    System.err.println("WIFI:app");
+    play.Logger.info("WIFI:app");
     render();
   }
 
   
   public static void displayId(String displayId) {
-    System.err.println("Pass:displayId" + params.get("displayId"));
+    play.Logger.info("Pass:displayId" + params.get("displayId"));
      
     Attendant attendant = null;
     try {
@@ -46,7 +46,7 @@ public class Pass extends Controller {
     final List<PassPort> passports = SpringUtils.getInstance()
         .getBean(PassPorter.class).findByDisplayId(attendant.getId());
     if (passports.isEmpty()) {
-      System.err.println("SelfRegister Pass:displayId" + params.get("displayId"));
+      play.Logger.info("SelfRegister Pass:displayId" + params.get("displayId"));
       redirect(play.Play.configuration.get("application.baseUrl")+"WiFi/Pass/create/"+params.get("displayId"));
       return;
     }
@@ -55,7 +55,7 @@ public class Pass extends Controller {
   }
 
   public static void create() {
-    System.err.println("***********WIFI:create" + params.get("displayId"));
+    play.Logger.info("***********WIFI:create" + params.get("displayId"));
     final Attendant attendant = SpringUtils.getInstance()
         .getBean(Attendants.class)
         .get(Attendant.longId(params.get("displayId")));
@@ -80,7 +80,7 @@ public class Pass extends Controller {
   }
 
   public static void print() throws Exception {
-    System.err.println("WIFI:print" + params.get("displayId"));
+    play.Logger.info("WIFI:print" + params.get("displayId"));
     final Attendant attendant = SpringUtils.getInstance()
         .getBean(Attendants.class)
         .get(Attendant.longId(params.get("displayId")));
@@ -128,7 +128,7 @@ public class Pass extends Controller {
     pb.command(sb);
     pb.directory(new File("/Users/menabe/Software/Zuul/badge"));
     Process p = pb.start();
-    IO.copy(p.getInputStream(), System.err);
+    //IO.copy(p.getInputStream(), System.err);
     // p.wait(10000);
     // p.destroy();
     render();
@@ -136,13 +136,15 @@ public class Pass extends Controller {
 
   public static String tryLogin(String passPortId) {
     play.Logger.info("grantAccess to="+passPortId);
-    final PassPorter passPorter = SpringUtils.getInstance().getBean(
-        PassPorter.class);
+    final PassPorter passPorter = SpringUtils.getInstance().getBean(PassPorter.class);
     PassPort passPort;
     try {
       passPort = passPorter.get(passPortId);
+			if (passPort.getDisplayId() == null) {
+      	return "code not found";
+			}
     } catch (DocumentNotFoundException e) {
-      return "code not found";
+      	return "code not found";
     }
     /* Test Code */
 		WiFi.Login login = new WiFi.Login(request);

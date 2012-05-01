@@ -36,7 +36,7 @@ public class ResolvArp {
       }
       in.close();
     }catch (Exception e) {
-      System.err.println("Error: " + e.getMessage());
+      play.Logger.error("Error: " + e.getMessage());
       return null;
     } 
     return found;

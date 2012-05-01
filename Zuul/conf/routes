@@ -3,7 +3,7 @@
 # ~~~~
 
 # Ignore favicon requests
-GET     /favicon.ico                            404
+GET     /favicon.ico                           staticFile:/public/favicon.ico
 
 # Map static resources from the /app/public folder to the /public path
 GET     /WiFi/public/                          staticDir:public
