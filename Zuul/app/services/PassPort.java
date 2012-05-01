@@ -96,7 +96,11 @@ public class PassPort extends CouchDbDocument {
   private List<Ip2Mac> clients;
 
   public List<Ip2Mac> getClients() {
-    return clients;
+    if (clients == null) {
+      return new ArrayList<Ip2Mac>();
+    } else {
+      return clients;
+    }
   }
 
   public void setClients(List<Ip2Mac> clients) {
