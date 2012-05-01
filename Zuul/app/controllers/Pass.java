@@ -44,7 +44,7 @@ public class Pass extends Controller {
         .getBean(PassPorter.class).findByDisplayId(attendant.getId());
     if (passports.isEmpty()) {
       System.err.println("SelfRegister Pass:displayId" + params.get("displayId"));
-      redirect("/WiFi/Pass/create/"+params.get("displayId"));
+      redirect(play.Play.configuration.get("application.baseUrl")+"WiFi/Pass/create/"+params.get("displayId"));
       return;
     }
     PassPort passPort = passports.get(0);
@@ -73,7 +73,7 @@ public class Pass extends Controller {
       render("createError.html");
       return;
     }
-    redirect("/" + attendant.getTicket().getShortDisplayIdentifier());
+    redirect(play.Play.configuration.get("application.baseUrl") + attendant.getTicket().getShortDisplayIdentifier());
   }
 
   public static void print() throws Exception {

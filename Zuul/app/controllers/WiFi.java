@@ -125,7 +125,7 @@ public class WiFi extends Controller {
       String code = Pass.tryLogin(login.code.trim());
       if (code.equals("granted")) {
         login.granted = true;
-        redirect("/"+login.code);
+        redirect(play.Play.configuration.get("application.baseUrl")+login.code);
         return;
       }
     }

@@ -37,21 +37,20 @@ public class PassPort extends CouchDbDocument {
       cmd.add("/sbin/iptables");
       cmd.addAll(opts);
       
-      play.Logger.info("Starting:"+StringUtils.join(cmd, " "));
+			String str = StringUtils.join(cmd, " ");
+      play.Logger.info("Starting:"+str);
       ProcessBuilder pb = new ProcessBuilder();
       pb.command(cmd);
       try {
         Process p = pb.start();
-        p.wait();
-  
+        //p.wait();
       } catch (IOException e) {
-        play.Logger.error("Failed to start:IOException:"+sb.toString());
-      } catch (InterruptedException e) {
-        play.Logger.error("Failed to start:InterruptedException:"+sb.toString());  
-      }
+        play.Logger.error("Failed to start:IOException:"+str);
+      } 
     }
     public static void clearIPTables() {
-      iptables(new String[] { "-t", "mangle", "-F" });
+      iptables(new String[] { "-t", "mangle", "-F", "FREE_MACS" });
+      iptables(new String[] { "-t", "mangle", "-A", "FREE_MACS", "-j", "RETURN" });
     }
     
     private static final long serialVersionUID = 1L;
