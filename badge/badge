@@ -83,8 +83,10 @@ InstallDir = File.expand_path(File.dirname(__FILE__))
 
 options[:install_dir] = InstallDir
 
+
 Dir.mktmpdir { |tmp|
   p = Dir.pwd
+  system("cp *.png #{tmp}")
   Dir.chdir(tmp)
   File.open(TexFileName, 'w') do |f|
     f.puts batch_latex(options)

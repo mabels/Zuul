@@ -8,15 +8,23 @@ GET     /favicon.ico                            404
 # Map static resources from the /app/public folder to the /public path
 GET     /WiFi/public/                          staticDir:public
 
+GET 	/WiFi/Pass/app					   Pass.app
+POST    /WiFi/Pass/create				        Pass.create
+GET     /WiFi/Pass/create/{<\d{12}>displayId}   Pass.create
+POST    /WiFi/Pass/print				   Pass.print
+
 # Catch all
 POST     /WiFi/Admin/search/service            Admin.service
-GET     /WiFi/Admin/search/formAttendant        Admin.formAttendant
-POST     /WiFi/Admin/search/newAttendant        Admin.newAttendant
+POST     /WiFi/Admin/printBadge                Admin.printBadge
+GET     /WiFi/Admin/search/formAttendant       Admin.formAttendant
+POST     /WiFi/Admin/search/newAttendant       Admin.newAttendant
 GET     /WiFi/Admin/{action}                   Admin.{action}
 POST    /WiFi/askLogin                         WiFi.askLogin
 GET     /WiFi/loggedIn                         WiFi.login
-GET     /WiFi/qrCode                         WiFi.qrCode
-GET	    /{<\d{12}>displayId}				   WiFi.displayId
+GET     /WiFi/qrCode/{passPortId}              WiFi.qrCode
+GET	    /{<\d{12}>displayId}				   Pass.displayId
+GET	    /{<\w{5}>passPortId}				   Pass.grantAccess
+
 
 *       /.*                                    WiFi.catchAll
 
