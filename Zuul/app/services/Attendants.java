@@ -1,8 +1,11 @@
 package services;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.UpdateConflictException;
@@ -104,8 +107,20 @@ function(doc) {
       query = sb.toString();
     }
     String end = query + "z";
-    ViewQuery q = createQuery("freeSearch").includeDocs(true).limit(15).startKey(query).endKey(end);
-    return CollectionUtils.collect(db.queryView(q, Attendant.class), new Transformer() {     
+    final Set<String> set = new HashSet<String>();
+    ViewQuery q = createQuery("freeSearch").includeDocs(true).limit(50).startKey(query).endKey(end);
+    return CollectionUtils.collect(CollectionUtils.select(db.queryView(q, Attendant.class), new Predicate() {
+      
+      @Override
+      public boolean evaluate(Object arg0) {
+        String id = ((Attendant)arg0).getId();
+        if (set.contains(id)) {
+          return false;
+        }
+        set.add(id);
+        return true;
+      }
+    }), new Transformer() {     
       @Override
       public Object transform(Object arg0) {
         return ((Attendant)arg0).getTicket();
