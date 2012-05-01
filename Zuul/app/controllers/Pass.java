@@ -157,7 +157,7 @@ public class Pass extends Controller {
   }
   
   public static void reloadMacs() {
-    PassPort.Ip2Mac.reloadMacs();
+    SpringUtils.getInstance().getBean(PassPorter.class).reloadMacs();
     render();
   }
   /*
