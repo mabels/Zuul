@@ -7,10 +7,13 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.ektorp.support.CouchDbDocument;
 import org.ektorp.support.TypeDiscriminator;
 
@@ -25,19 +28,18 @@ public class PassPort extends CouchDbDocument {
 
   public static class Ip2Mac implements Serializable {
 
-    private static void iptables(Collection<String> opts) {
-      iptables((String[])opts.toArray());
-    }
     private static void iptables(String[] opts) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("/usr/bin/sudo /sbin/iptables");
-      for (String opt : opts) {
-        sb.append(" ");
-        sb.append(opt);
-      }
-      play.Logger.info("Starting:"+sb.toString());
+      iptables(Arrays.asList(opts));
+    }
+    private static void iptables(Collection<String> opts) {
+      List<String> cmd = new ArrayList<String>();
+      cmd.add("/usr/bin/sudo");
+      cmd.add("/sbin/iptables");
+      cmd.addAll(opts);
+      
+      play.Logger.info("Starting:"+StringUtils.join(cmd, " "));
       ProcessBuilder pb = new ProcessBuilder();
-      pb.command(sb.toString());
+      pb.command(cmd);
       try {
         Process p = pb.start();
         p.wait();
