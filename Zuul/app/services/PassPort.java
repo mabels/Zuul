@@ -37,11 +37,11 @@ public class PassPort extends CouchDbDocument {
       cmd.add("/usr/bin/sudo");
       cmd.add("/sbin/iptables");
       cmd.addAll(opts);
-
-      String str = StringUtils.join(cmd, " ");
-      play.Logger.info("Starting:" + str + ":" + play.Play.configuration.get("application.mode"));
       if (play.Play.configuration.get("application.mode").equals("prod")) {
 				cmdProcessor(cmd);
+			} else {
+      	String str = StringUtils.join(cmd, " ");
+      	play.Logger.info("Starting:" + str + ":" + play.Play.configuration.get("application.mode"));
 			}
 	  }
 
@@ -66,7 +66,6 @@ public class PassPort extends CouchDbDocument {
       pb.command(cmd);
       try {
         Process p = pb.start();
-        //p.wait();
       } catch (IOException e) {
         play.Logger.error("Failed to start:IOException:"+str);
       } 
