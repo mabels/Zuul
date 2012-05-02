@@ -1,13 +1,20 @@
 <!DOCTYPE html>
-
 <html>
-    <head>
-        <title>#{get 'title' /}</title>
-        <meta charset="${_response_encoding}">
-       <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
-        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8" />
+    <title>NEXT Berlin 2012 | WLAN Access | Sponsored by DREISECHSNULL - Deutsche Telekom AG</title>
+    <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}" />
+    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+</head>
+<body>
+  <div id="container">
+    <div id="header">
+      <div class="next"><a href="/">NEXT 2012</a></div>
+      <div class="dsn"><a href="http://dreisechsnull.telekom.de/" target="_blank">DREISECHSNULL - Deutsche Telekom AG</a></div>
+    </div>
+    <div id="content">
         #{doLayout /}
-    </body>
+    </div>
+  </div>
+</body>
 </html>
