@@ -102,7 +102,7 @@ public class WiFi extends Controller {
 			} else {
 				this.url = request.url;
 			}
-			this.appUrl = "https://wifi.nextconf.eu/WiFi/askLogin";
+			this.appUrl = play.Play.configuration.get("application.baseUrl")+"WiFi/askLogin";
     }
 		public String appUrl;
     public String host;
