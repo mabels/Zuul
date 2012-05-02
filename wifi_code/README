@@ -1,0 +1,19 @@
+Prerequisites:
+  ruby: 1.9
+  gems: unicode_utils
+  apt: texlive-latex-base, texlive-latex-extra
+
+Example to stdout:FIRSTNAME -s SECONDNAME -l LASTNAME -c COMPANYNAME -a CATEGORY
+  PATH_TO/wifi_code -c WIFI-CODE -q PATH_TO/qrCode.png | lpr
+
+Example to file:
+  PATH_TO/wifi_code -c WIFI-CODE -q PATH_TO/qrCode.png -o wifi_code.pdf
+
+Example debug:
+
+  PATH_TO/wifi_code -d -c WIFI-CODE -q PATH_TO/qrCode.png
+
+Help: 
+
+  PATH_TO/wifi_code -h
+
