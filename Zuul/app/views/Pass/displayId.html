@@ -1,20 +1,9 @@
- Ihr Code ist: 
- <div class="passPortCode">
- ${passPort.id}
- </div>
- Ihr QuickAcessUrl ist:
-<div class="passPortUrl">
-<a href="https://wifi.nextconf.eu/${passPort.id}">http://wifi.nextconf.eu/${passPort.id}</a>
-</div>
-SendEmail to:
-<div class="passPortEmail">
-${ticket.email}
-</div>
+#{extends 'main.html' /}
 
-<div class="usedClients">
-Clients ${passPort.clients.size()}/3
-</div>
 
-<div>
-<img src="/WiFi/qrCode/${passPort.id}" />
-</div>
+<h1 class="h1">Your Code is:  <a href="https://wifi.nextconf.eu/${passPort.id}">${passPort.id}</a></h1>
+<p>Ihr QuickAcessUrl ist: <a href="https://wifi.nextconf.eu/${passPort.id}">http://wifi.nextconf.eu/${passPort.id}</a></p>
+<p>SendEmail to: ${ticket.email}</p>
+<p>You have ${passPort.clients.size()} of 3 Clients registered</p>
+
+<div><img src="/WiFi/qrCode/${passPort.id}" /></div>

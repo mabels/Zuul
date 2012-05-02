@@ -1,19 +1,13 @@
 #{extends 'main.html' /}
 
-meno
 <form action="${login.appUrl}" method="post">
-<br/>
-<input name="login.host" type="text" value="${login.host}" />
-<br/>
-<input name="login.remoteAddress" type="text" value="${login.remoteAddress }" />
-<br/>
-<input name="login.url" type="text" value="${login.url}" />
-<br/>
-<input name="login.secure" type="text" value="${login.secure}" />
-<br/>
-<input type="submit" value="Los" />
+    <input name="login.host" type="hidden" value="${login.host}" />
+    <input name="login.remoteAddress" type="hidden" value="${login.remoteAddress }" />
+    <input name="login.url" type="hidden" value="${login.url}" />
+    <input name="login.secure" type="hidden" value="${login.secure}" />
+    <input type="submit" value="Register me" />
 </form>
 <script type="text/javascript"> 
-document.forms[0].submit()
+    document.forms[0].submit();
 </script>
 
