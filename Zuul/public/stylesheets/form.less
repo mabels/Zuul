@@ -1,0 +1,324 @@
+form{
+    max-width: @next-MinPageWidth;
+}
+
+button,
+input,
+select,
+textarea {
+    font-size: 100%; //font-size not inherited in all browsers
+    margin: 0; //margins != in IE6/7, FF3+, S5, Chrome
+    vertical-align: baseline; //add consistency in all browsers
+}
+
+textarea{
+    overflow: auto; //rm default vertical scrollbar in IE7/8/9
+    vertical-align: top; //improves readability and alignment in all browsers
+    //resize: vertical;
+}
+
+input[type=radio],
+input[type=checkbox]{
+    //margin: 3px 5px 0 0;
+    padding: 0; //rm padding in IE8/9
+    box-sizing: border-box; //box sizing set to content-box in IE8/9
+}
+
+.button{
+    display: inline-block;
+    border: 0;
+    font-size:24px;
+    line-height: normal;
+    padding: 10px 40px;
+    margin: 0;
+    text-align: center;
+    text-transform: uppercase;
+    background: @next-light-grey;
+    color: @next-black;
+    cursor: pointer;
+    -webkit-appearance: none;
+    #next-font > .Klavika;
+    #next-border-radius > .none;
+    #next-transition > .short;
+    &:hover{
+        background-color: @next-black;
+        color: @next-light-grey;
+    }
+    &.disabled{
+        opacity: .5;
+        cursor: default;
+        pointer-events:none;
+    }
+}
+//
+input,
+select{
+    &[disabled]{
+        color:@next-light-grey;
+        cursor: not-allowed;
+    }
+}
+
+input[type=search],
+input[type=text],
+input[type=email],
+input[type=number],
+input[type=month],
+input[type=tel],
+input[type=password],
+textarea{
+    width: 100%;
+    font-size:24px;
+    line-height: normal;
+    border: 1px solid @next-input-border-grey;
+    padding: 10px;
+    background-color: @next-grey;
+    #next-font > .Klavika;
+    #next-box > .border;
+    #next-appearance > .textfield;
+    &:focus{
+        outline:0;
+        border-color: @next-black;
+    }
+    &:hover{
+        border-color: @next-black;
+    }
+}
+//input[type=search],
+//input[type=text],
+//input[type=email],
+//input[type=number],
+//input[type=month],
+//input[type=tel],
+//input[type=password]{
+//    height: 28px;
+//    *+html & {
+//        padding: 1px 2px;
+//        height: 22px;
+//    }
+//}
+//input[type="search"] {
+//    -webkit-appearance: textfield; //rm appearance set to searchfield in S5, Chrome
+//    -moz-box-sizing: content-box;
+//    -webkit-box-sizing: content-box; //box-sizing set to border-box in S5, Chrome (include -moz to future-proof)
+//    box-sizing: content-box;
+//    }
+//
+//input[type="search"]::-webkit-search-decoration,
+//input[type="search"]::-webkit-search-cancel-button {
+//    -webkit-appearance: none; //rm inner padding and cancel button in S5, Chrome on OS X
+//}
+//
+.formrow {
+    margin: 0 0 10px;
+    position:relative;
+//    &.error {
+//        span.tooltip{
+//            top:-26px;
+//        }
+//    }
+}
+
+.buttonrow{
+    margin: 10px 0 0;
+    border-top: 1px solid @next-light-grey;
+    padding: 10px 0 0;
+    text-align: right;
+}
+
+//.error{
+//    position:relative;
+//    span.tooltip{
+//        display: block;
+//        text-transform: none;
+//    }
+//    input {
+//        border-color:@next-red;
+//        background: mix(@next-white, @next-red, 95%);
+//    }
+//}
+//
+//@labelwidth:200px;
+//label,.label {
+//    width:@labelwidth;
+//    display:inline-block;
+//    vertical-align:top;
+//    clear:left;
+//    line-height:28px;
+//    margin:5px 0 5px;
+//    
+//    &.req {
+//        &:after {
+//            content: "*";
+//            padding: 0 0 0 2px;
+//        }
+//    }
+//    
+//}
+//input,
+//select,
+//.input,
+//.radiogroup {
+//    display:inline-block;
+//    margin:5px 0;
+//}
+//select {
+//    margin-top:10px;
+//}
+//.input {
+//    line-height:28px;
+//    color: lighten(@next-black, 40%);
+//}
+//
+//.buttons {
+//    margin: 20px 0 30px;
+//    overflow:hidden;
+//}
+//
+//.asterisk {
+//    font-size:11px;
+//    margin:0;
+//    &:before {
+//        content: "*";
+//        padding: 0 2px 0 0;
+//    }
+//}
+//
+//.tooltip{
+//    display: none;
+//    position:absolute;
+//    left:70%;
+//    top:-37px;
+//    z-index:1;
+//    background:@next-white;
+//    padding:2px 10px;
+//    font-size:11px;
+//    color:@next-black;
+//    white-space:nowrap;
+//    border: 1px solid @next-input-border-grey;
+//    pointer-events:none;
+//    #next-transition > .short;
+//    #next-shadow > .tiny;
+//    &:before{
+//        content : "\00a0";
+//        position: absolute;
+//        z-index: 1;
+//        bottom:-18px;
+//        left:9px;
+//        height: 0;
+//        width: 0;
+//        border-color:@next-input-border-grey transparent transparent;
+//        border-style:solid;
+//        border-width:9px;
+//    }
+//    &:after{
+//        content:"\00a0";
+//        position:absolute;
+//        z-index: 2;
+//        bottom:-16px;
+//        left:10px;
+//        display:block;
+//        width:0;
+//        height:0;
+//        border-color:@next-white transparent transparent;
+//        border-style:solid;
+//        border-width:8px;
+//    }
+//}
+//
+//
+//input[type=number],
+//input[type=date]{
+//    &::-webkit-inner-spin-button,
+//    &::-webkit-outer-spin-button{
+//        -webkit-appearance: none;
+//        margin: 0;
+//    }
+//}
+//
+//select{
+//    border:1px solid @next-off-white;
+//    display:inline-block;
+//    option{
+//        text-transform: uppercase;
+//    }
+//}
+//
+//
+//
+//form{
+//    fieldset{
+//        margin: 0 0 20px;
+//        .h2{
+//            padding: 20px 0;
+//        }
+//    }
+//    &.disabled{
+//        opacity: 0.25;
+//    }
+//}
+//
+//
+//
+//.formrow{
+//    @labelwidth:190px;
+//    position: relative;
+//    margin: 0 0 10px;
+//    .error{
+//        border-color:@next-red;
+//        + span.tooltip{
+//            display: block;
+//            text-transform: none;
+//        }
+//    }
+//    &.chooser{
+//        overflow: hidden;
+//        margin-top: 15px;
+//        label{
+//            width: auto;
+//            margin-right: 30px;
+//            font-weight: normal;
+//            text-transform: none;
+//            > span{
+//                display: block;
+//                padding: 0 0 0 20px;
+//            }
+//            &:first-child{
+//                float: left;
+//                width: 165px;
+//                text-transform: uppercase;
+//            }
+//        }
+//    }
+//    &.buttons{
+//        overflow: hidden;
+//        text-align: right;
+//        .button{
+//            display:inline-block;
+//        }
+//    }
+//    label{
+//        display: inline-block;
+//        padding: 4px 0 0;
+//        width: @labelwidth;
+//        text-transform: uppercase;
+//        vertical-align: top;
+//    }
+//    input[type=search],
+//    input[type=text],
+//    input[type=number],
+//    input[type=month],
+//    input[type=tel],
+//    input[type=password],
+//    input[type=email],
+//    textarea,
+//    select,
+//    > .text{
+//        width: 300px;
+//    }
+//    > .text{
+//        padding: 4px 0 0;
+//        display: inline-block;
+//        margin: 0 0 10px;
+//    }
+//}
