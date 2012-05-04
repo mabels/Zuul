@@ -56,8 +56,7 @@ public class Admin extends Controller {
       render("createError.html");
       return;
     }
-    FileOutputStream fos = new FileOutputStream("../badge/" + attendant.getId()
-        + ".png");
+    FileOutputStream fos = new FileOutputStream(play.Play.configuration.get("play.tmp")+ + attendant.getId() + ".png");
     IO.copy(WiFi.makeQrCode(attendant.getTicket().getShortDisplayIdentifier(), 300), fos);
     fos.close();
 
@@ -77,7 +76,7 @@ public class Admin extends Controller {
       sb.add(company);
     }
     pb.command(sb);
-    pb.directory(new File("/Users/menabe/Software/Zuul/badge"));
+    pb.directory(new File(play.Play.configuration.get("zuul.base")+"/badge"));
     Process p = pb.start();
     //IO.copy(p.getInputStream(), System.err);
     // p.wait(10000);
