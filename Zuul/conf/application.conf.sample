@@ -175,8 +175,8 @@ attachments.path=data/attachments
 # Mail configuration
 # ~~~~~ 
 # Default is to use a mock Mailer
-mail.smtp=mock
-#mail.smtp.host=172.29.29.66
+#mail.smtp=mock
+mail.smtp.host=127.0.0.1
 
 # Or, specify mail host configuration
 # mail.smtp.host=127.0.0.1
@@ -190,7 +190,7 @@ mail.smtp=mock
 # ie if sending a HtmlMail, Play need to know which url your users use when accessing your app.
 # %test.application.baseUrl=http://localhost:9000/
 # %prod.application.baseUrl=http://www.yourdomain.com/
-application.baseUrl=http://localhost:8080/
+application.baseUrl=https://wifi.nextconf.eu/
 
 # Jobs executor
 # ~~~~~~
