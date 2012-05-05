@@ -56,14 +56,14 @@ public class Admin extends Controller {
       render("createError.html");
       return;
     }
-    FileOutputStream fos = new FileOutputStream(play.Play.configuration.get("play.tmp")+ + attendant.getId() + ".png");
+    FileOutputStream fos = new FileOutputStream(play.Play.configuration.get("play.tmp")+ "/" + attendant.getId() + ".png");
     IO.copy(WiFi.makeQrCode(attendant.getTicket().getShortDisplayIdentifier(), 300), fos);
     fos.close();
 
     String[] args = new String[] { "/bin/sh", "run.sh", "-f",
         StringUtils.defaultString(attendant.getTicket().getFirstName()), "-l",
         StringUtils.defaultString(attendant.getTicket().getLastName()), "-q",
-        attendant.getId() + ".png" };
+        play.Play.configuration.get("play.tmp")+ "/" + attendant.getId() + ".png" };
 
     ProcessBuilder pb = new ProcessBuilder();
     List<String> sb = new ArrayList<String>(args.length);
