@@ -1,8 +1,19 @@
-<div class="newAttendant">
-<form>
-<input name="firstName" placeholder="firstName" />
-<input name="lastName" placeholder="lastName" />
-<input name="company" placeholder="company" />
-<input name="displayId" placeholder="displayIdentifier" />
+#{extends 'main.html' /}
+<h1 class="h1">Enter attendant data</h1>
+<form class="newAttendant" action="/WiFi/Admin/search/newAttendant" >
+    <div class="formrow">
+        <input type="text" placeholder="FirstName" name="firstName" />
+    </div>
+    <div class="formrow">
+        <input type="text" placeholder="LastName" name="lastName" />
+    </div>
+    <div class="formrow">
+        <input type="text" placeholder="Company" name="company" />
+    </div>
+    <div class="formrow">
+        <input type="text" placeholder="displayIdentifier" name="displayId" />
+    </div>
+    <div class="buttonrow">
+        <input type="submit" value="Create" class="button" />
+    </div>
 </form>
-</div>
