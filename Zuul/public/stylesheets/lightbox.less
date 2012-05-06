@@ -1,0 +1,24 @@
+.lightbox{
+    @width:360px;
+    @height:360px;
+    position: absolute;
+    top:50%;
+    left:50%;
+    width: @width;
+    height: @height;
+    padding: 20px;
+    margin: @height/-2 0 0 @width/-2;
+    background: @next-white;
+    border-bottom: 1px solid @next-light-grey;
+    #next-border-radius > .generic(5px);
+    #next-shadow > .generic(0 0 20px rgba(0,0,0,.75));
+    > .close{
+        position: absolute;
+        top:5px;
+        right:7px;
+        cursor: pointer;
+        &:hover{
+            color: @next-cyan;
+        }
+    }
+}
