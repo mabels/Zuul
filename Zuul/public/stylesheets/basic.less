@@ -6,7 +6,10 @@ html {
 
 body{
     margin:0;
-    padding:20px 0 0;
+    padding: @next-pagePadding;
+    @media screen and (max-width:540px){
+        padding: @next-pagePaddingSmall;
+    }
     font-size:@next-base-fontsize;
     line-height:@next-base-lineheight;
     #next-font > .Arial;
@@ -81,7 +84,7 @@ table{
     border-spacing:0;
     border-collapse:collapse;
     width:100%;
-    margin: @next-pageTopPadding 0 @next-pageTopPadding 0;
+    margin: @next-pagePadding 0 @next-pagePadding 0;
     caption{
         text-align:left;
     }
@@ -110,84 +113,27 @@ h1,h2,h3,h4,h5,h6,
 }
 
 .h1{
-    //margin:0 0 18px;
-    font-size: 36px;
-    line-height: 38px;
+    margin:0 0 30px;
+    font-size: 24px;
+    line-height: 26px;
 }
-.h2{
-    //margin:0 0 14px;
-    font-size: 30px;
-    line-height: 28px;
-}
-.h3{
-    //margin:0 0 14px;
-    font-size: 22px;
-    line-height: 24px;
-}
-.h4{
-    //margin:0 0 2px;
-    font-size: 18px;
-    line-height: 22px;
-}
-.h5{
-    //margin:0 0 2px;
-    font-size:14px;
-    text-transform: uppercase;
-}
-.h6{
-    //margin:0 0 2px;
-    font-size:12px;
-    text-transform: uppercase;
-}
-
 .print{
     display:none;
 }
 
-//iframe.fblike{
-//    display: inline-block;
-//    border:0;
-//    overflow:hidden;
-//    width:48px;
-//    height:21px;
-//}
-
-.progress{
-    &:after{
-        @width:125px;
-        position: absolute;
-        z-index: 25;
-        top: 50%;
-        left: 50%;
-        width: @width;
-        height: @width;
-        margin: @width / -2 0 0  @width / -2;
-        content: "";
-        opacity: .6;
-        background: rgba(0,0,0,1) url("@{next-image-path}/elements/el_loaddark.gif") no-repeat 50% 50%;
-        #next-border-radius > .generic(10px);
-        #next-transition > .fade;
-    }
-}
-body.progress{
-    &:after{
-        position: fixed;
-    }
-}
-
 #container{
-    min-width: @next-MinPageWidth - 20px;
-    max-width: @next-MaxPageWidth - 20px;
+    min-width: @next-MinPageWidth;
+    max-width: @next-MaxPageWidth;
     margin: 0 auto;
     background: @next-white;
-    padding: 0 20px;
 }
 
 #header{
     overflow: hidden;
-    padding: 0 0 10px;
-    border-bottom: 1px solid @next-light-grey;
-    margin: 0 0 10px;
+    > div{
+        margin: 0 0 10px;
+        #next-tools > .ir();
+    }
     .next{
         float: left;
         width: 152px;
@@ -206,9 +152,18 @@ body.progress{
         display: block;
         height: 100%;
     }
+    @media screen and (max-width:658px){
+        .dsn{
+            float: left;
+            margin-left:27px;
+        }
+    }
 }
 
 #content{
+    border-top: 1px solid @next-light-grey;
+    margin: 0 27px;
+    padding: 20px 0 0;
 }
 
 #footer{
