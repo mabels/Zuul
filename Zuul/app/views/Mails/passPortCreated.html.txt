@@ -1,7 +1,9 @@
 Your authentication code for the NEXT12 Wi-Fi
 =============================================
 
-Just in case you need it - this is your personal authentication code for the NEXT12 Wi-Fi: ${passPort}
+Hello ${ticket.getFirstName()},
+
+just in case you need it - this is your personal authentication code for the NEXT12 Wi-Fi: ${passPort}
 
 You can use it to register your devices.
 
