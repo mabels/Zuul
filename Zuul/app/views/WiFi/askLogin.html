@@ -1,17 +1,17 @@
 #{extends 'main.html' /}
-        <h1 class="h1">Please enter your Login Code*</h1>
-        <p>
-            *Receive your Code at the Terminals in the entrance area.
-        </p>
+        <h1 class="h1">Please enter your authentication code*</h1>
         <form action="/WiFi/askLogin" method="post">
             <input name="login.host" type="hidden" value="${login.host}" />
             <input name="login.remoteAddress" type="hidden" value="${login.remoteAddress}" />
             <input name="login.url" type="hidden" value="${login.url}" />
             <input name="login.secure" type="hidden" value="${login.secure}" />
             <div class="formrow">
-                <input name="login.code" type="text" value="${login.code}" />
+                <input name="login.code" type="number" value="${login.code}" />
             </div>
             <div class="buttonrow">
                 <input type="submit" value="Login" class="button" />
+            </div>
+            <div class="inforow">
+                *Don't have your code? <br /><b>Scan your badge with any QR code reader</b> or use one of the computers at the back side of the accreditation desk
             </div>
         </form>
