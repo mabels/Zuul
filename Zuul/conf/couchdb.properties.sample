@@ -1,0 +1,6 @@
+host=127.0.0.1
+port=5984
+maxConnections=20
+connectionTimeout=1000
+socketTimeout=10000
+autoUpdateViewOnChange=true
