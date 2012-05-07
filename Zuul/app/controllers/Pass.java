@@ -29,7 +29,14 @@ public class Pass extends Controller {
     render();
   }
 
-  
+  public static void longDisplayId(String displayId) {
+      StringBuilder buffer = new StringBuilder();
+      for(String i : displayId.split("-")) {
+        buffer.append(i);
+      }
+      redirect(buffer.toString());
+	}
+
   public static void displayId(String displayId) {
     play.Logger.info("Pass:displayId" + params.get("displayId"));
      

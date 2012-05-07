@@ -116,69 +116,75 @@ Amiando.prototype.allTickets = function(payementId, completed) {
 
 var amiando = new Amiando();
 
-var attendants = CouchClient(config.couchdb);
-attendants.request('PUT', '/attendants', function(err, result) {
+var job = function () {
+	var attendants = CouchClient(config.couchdb);
+	attendants.request('PUT', '/attendants', function(err, result) {
 
-  amiando.eventFind({ title: config.eventTitle }, function(eventFind) {
-  console.log("eventFind:", eventFind)
-    amiando.event(eventFind.ids[0], function(event) {
-  console.log("event:", event)
-      amiando.allPayments(event.event.id, function(payments) {
-  console.log("allPayments:", payments)
-        var readPayment = function(id, completed) {  
-          if (!id) {
-            return completed() 
-          }
-          amiando.allTickets(id, function(tickets) { 
-            var readTicket = function(ticketId, completed) {
-              if (!ticketId) {
-                return completed() 
-              }
-              attendants.get(ticketId, function(err, data) { 
-                if (err) { 
-                  amiando.ticket(ticketId, function(ticket) {
-                    ticket._id = ticket.ticket.displayIdentifier
-                    attendants.save(ticket, function(err) {
-                      if (err) {
-                        console.log("can to write:", id, err)
-                      }
-                      readTicket(tickets.tickets.pop(), completed)
-                    })
-                  })
-                } else {
-                  readTicket(tickets.tickets.pop(), completed)
-                }
-              })
-            }
-            console.log("allTickets:", tickets);
-            if (tickets && tickets.tickets) {
-              readTicket(tickets.tickets.pop(), function() {
-                readPayment(payments.payments.pop(), completed)
-              })
-            } else {
-              readPayment(payments.payments.pop(), completed)
-            }
-            return
-          })
-        }
-        readPayment(payments.payments.pop(), function() { 
-  console.log("READ all tickets")
-        })
-      })
-    })
+		amiando.eventFind({ title: config.eventTitle }, function(eventFind) {
+		console.log("eventFind:", eventFind)
+			amiando.event(eventFind.ids[0], function(event) {
+		console.log("event:", event)
+				amiando.allPayments(event.event.id, function(payments) {
+		console.log("allPayments:", payments)
+					var readPayment = function(id, completed) {  
+						if (!id) {
+							return completed() 
+						}
+						amiando.allTickets(id, function(tickets) { 
+							var readTicket = function(ticketId, completed) {
+								if (!ticketId) {
+									return completed() 
+								}
+								attendants.get(ticketId, function(err, data) { 
+									if (err) { 
+										amiando.ticket(ticketId, function(ticket) {
+											ticket._id = ticket.ticket.displayIdentifier
+											attendants.save(ticket, function(err) {
+												if (err) {
+													console.log("can to write:", id, err)
+												}
+												readTicket(tickets.tickets.pop(), completed)
+											})
+										})
+									} else {
+										readTicket(tickets.tickets.pop(), completed)
+									}
+								})
+							}
+							console.log("allTickets:", tickets);
+							if (tickets && tickets.tickets) {
+								readTicket(tickets.tickets.pop(), function() {
+									readPayment(payments.payments.pop(), completed)
+								})
+							} else {
+								readPayment(payments.payments.pop(), completed)
+							}
+							return
+						})
+					}
+					readPayment(payments.payments.pop(), function() { 
+		console.log("READ all tickets")
+					})
+				})
+			})
 
-  /*
-  var syncer = function(next) { 
-    amiando.resync(1, function(result) { 
-  console.log("resyncer:", result)
-      amiando.sync(result.nextId, function(result) {
-  console.log("sync:", result)
-        })
-      })
-    })
-  }
-    */
-  })
-})
+		/*
+		var syncer = function(next) { 
+			amiando.resync(1, function(result) { 
+		console.log("resyncer:", result)
+				amiando.sync(result.nextId, function(result) {
+		console.log("sync:", result)
+					})
+				})
+			})
+		}
+			*/
+		})
+	})
+}
 
-//syncer();
+var timeouter = function() { 
+	job();
+	setTimeout(timeouter, 3600000);
+}
+timeouter();

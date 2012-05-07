@@ -91,6 +91,9 @@
 	  $('.printDialog').show();
 	  
   });
+  $('.searchTable tbody tr .displayId').live('click', function() {
+		window.location.href="/"+$(this).closest('tr').data('displayidentifier');
+  })
   $(".lightbox .close").live("click", function(){
     $(this).parents(".lightbox").remove();
   });
