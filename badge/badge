@@ -39,7 +39,7 @@ def t(string)
   }
 end
 
-options = {vip: false, two_days: false, debug: false, output: nil}
+options = {:vip => false, :two_days => false, :debug => false, :output => nil}
 options.default = ''
 OptionParser.new do |opts|
   opts.banner = "Usage: #{$0} [options]"

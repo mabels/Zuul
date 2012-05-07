@@ -105,15 +105,14 @@ public class Pass extends Controller {
     // bild.png
     // Runtime.getRuntime().exec("../)" +
 
-    FileOutputStream fos = new FileOutputStream("../badge/" + attendant.getId()
-        + ".png");
+    FileOutputStream fos = new FileOutputStream(play.Play.configuration.get("play.tmp")+"/"+passPort.getId()+".png");
     IO.copy(WiFi.makeQrCode(passPort.getId(), 200), fos);
     fos.close();
 
     String[] args = new String[] { "/bin/sh", "run.sh", "-f",
         StringUtils.defaultString(attendant.getTicket().getFirstName()), "-l",
         StringUtils.defaultString(attendant.getTicket().getLastName()), "-q",
-        attendant.getId() + ".png" };
+        play.Play.configuration.get("play.tmp")+"/"+passPort.getId() + ".png" };
 
     ProcessBuilder pb = new ProcessBuilder();
     List<String> sb = new ArrayList<String>(args.length);
@@ -126,7 +125,7 @@ public class Pass extends Controller {
       sb.add(company);
     }
     pb.command(sb);
-    pb.directory(new File("/Users/menabe/Software/Zuul/badge"));
+    pb.directory(new File(play.Play.configuration.get("zuul.base")+"/wifi_code"));
     Process p = pb.start();
     //IO.copy(p.getInputStream(), System.err);
     // p.wait(10000);

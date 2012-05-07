@@ -3,7 +3,10 @@ Hallo,
 wir schicken ihnen ein Email mit dem Zugangs Code fuer die
 Next:
 
+Code:
 ${passPort}
+Url:
+${play.Play.configuration.get("application.baseUrl")}${passPort}
 
 ${ticket.email}
 
