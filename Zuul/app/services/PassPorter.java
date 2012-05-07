@@ -56,7 +56,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
   }
 
   @View(name = "getUnusedKeyCodes", map = "function(doc) { if (!doc.used) emit(doc._id, null) }")
-  public PassPort createPass(String displayId, FirstTime firstTime) {
+  public PassPort createPass(String displayId, int maxClients, FirstTime firstTime) {
     List<PassPort> passPort = findByDisplayId(displayId);
     if (!passPort.isEmpty()) {
       return passPort.get(0);
@@ -68,6 +68,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
       if (!codes.isEmpty() && !codes.get(0).getUsed()) {
         codes.get(0).setUsed(true);
         codes.get(0).setDisplayId(displayId);
+        codes.get(0).setMaxClients(maxClients);
         if (firstTime != null) {
           firstTime.run(codes.get(0));
         }
@@ -179,7 +180,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
         return "granted";
       }
     }
-    if (pp.getClients().size() >= 3) {
+    if (pp.getClients().size() >= pp.getMaxClients()) {
       return "too many clients";
     }
     Ip2Mac i2m = new Ip2Mac();

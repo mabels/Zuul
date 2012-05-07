@@ -27,6 +27,19 @@ public class Attendants extends CouchDbRepositorySupport<Attendant> {
   }
 
  
+  @View(name = "findByEmail", map = "function(doc) { doc.ticket.email && emit(doc.ticket.email.toLowerCase(), null); }")
+  public Collection<Attendant.Ticket> findByEmail(String str) {
+    String query = str.toLowerCase().trim();
+    ViewQuery q = createQuery("findByEmail").includeDocs(true).key(query);
+    return CollectionUtils.collect(db.queryView(q, Attendant.class), new Transformer() {     
+      @Override
+      public Object transform(Object arg0) {
+        return ((Attendant)arg0).getTicket();
+      }
+    });
+  }
+  
+  
   //private List<Attendant> attendees;
 
   public boolean createAttendant(final Attendant attendant) {
