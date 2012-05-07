@@ -34,6 +34,10 @@
     </ol>
     <!-- <div><img src="/WiFi/public/images/logos/lg_next.png" width="152" height="75" alt="lg_next" /></div> -->
     <form action="/WiFi/Admin/printBadge">
+        <select name="printer">
+          <option value="BADGES-D4">rechts</option>
+          <option value="BADGES-D3">links</option>
+        </select>
         <input type="submit" name="cancel" value="Cancel" class="button" />
         <input type="submit" name="print" value="Print" class="button" />
     </form>

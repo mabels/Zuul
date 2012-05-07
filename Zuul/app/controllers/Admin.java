@@ -60,9 +60,15 @@ public class Admin extends Controller {
     IO.copy(WiFi.makeQrCode(attendant.getTicket().getShortDisplayIdentifier(), 300), fos);
     fos.close();
 
+    String o = params.get("printer");
+    if (o == null || o.empty()) {
+      o = "BADGES-D4";
+    }
+
     String[] args = new String[] { "/bin/sh", "run.sh", "-f",
         StringUtils.defaultString(attendant.getTicket().getFirstName()), "-l",
         StringUtils.defaultString(attendant.getTicket().getLastName()), "-q",
+        "-p", o,
         play.Play.configuration.get("play.tmp")+ "/" + attendant.getId() + ".png" };
 
     ProcessBuilder pb = new ProcessBuilder();

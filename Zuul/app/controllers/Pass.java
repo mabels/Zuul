@@ -34,7 +34,7 @@ public class Pass extends Controller {
       for(String i : displayId.split("-")) {
         buffer.append(i);
       }
-      redirect("/" + buffer.toString());
+      redirect(play.Play.configuration.get("application.baseUrl")+buffer.toString());
 	}
 
   public static void displayId(String displayId) {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		180C9B271558085C0028042D /* CameraDisplayApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 180C9B261558085C0028042D /* CameraDisplayApplicationDelegate.m */; };
 		183E02B4154945C400A6C06D /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183E02B3154945C400A6C06D /* CoreVideo.framework */; };
 		183E02B715495A8300A6C06D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183E02B615495A8300A6C06D /* WebKit.framework */; };
 		183E02FD154978AA00A6C06D /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183E02FC154978AA00A6C06D /* CoreMedia.framework */; };
@@ -20,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		180C9B251558085C0028042D /* CameraDisplayApplicationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraDisplayApplicationDelegate.h; sourceTree = "<group>"; };
+		180C9B261558085C0028042D /* CameraDisplayApplicationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraDisplayApplicationDelegate.m; sourceTree = "<group>"; };
 		183E02B3154945C400A6C06D /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		183E02B615495A8300A6C06D /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		183E02FC154978AA00A6C06D /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -84,6 +87,8 @@
 		E9C967D8137B516200C6D18B /* CameraDisplay */ = {
 			isa = PBXGroup;
 			children = (
+				180C9B251558085C0028042D /* CameraDisplayApplicationDelegate.h */,
+				180C9B261558085C0028042D /* CameraDisplayApplicationDelegate.m */,
 				E9C967E4137B516200C6D18B /* CameraDisplayDocument.h */,
 				E9C967E5137B516200C6D18B /* CameraDisplayDocument.mm */,
 				E9C967E7137B516200C6D18B /* CameraDisplayDocument.xib */,
@@ -169,6 +174,7 @@
 			files = (
 				E9C967DF137B516200C6D18B /* main.m in Sources */,
 				E9C967E6137B516200C6D18B /* CameraDisplayDocument.mm in Sources */,
+				180C9B271558085C0028042D /* CameraDisplayApplicationDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,9 +278,11 @@
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-I/Users/menabe/macosx/include",
+					"-I/Users/mickam/Documents/Next/zbar-0.10/include",
 				);
 				OTHER_LDFLAGS = (
 					"-L/Users/menabe/macosx/lib",
+					"-L/Users/mickam/Documents/Next/zbar-0.10/zbar/.libs",
 					"-lzbar",
 					"-liconv",
 					"-lpthread",
@@ -304,9 +312,11 @@
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-I/Users/menabe/macosx/include",
+					"-I/Users/mickam/Documents/Next/zbar-0.10/include",
 				);
 				OTHER_LDFLAGS = (
 					"-L/Users/menabe/macosx/lib",
+					"-L/Users/mickam/Documents/Next/zbar-0.10/zbar/.libs",
 					"-lzbar",
 					"-liconv",
 					"-lpthread",
