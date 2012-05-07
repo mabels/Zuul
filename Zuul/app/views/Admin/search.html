@@ -93,6 +93,7 @@
   });
   $('.searchTable tbody tr .displayId').live('click', function() {
 		window.location.href="/"+$(this).closest('tr').data('displayidentifier');
+    return false;
   })
   $(".lightbox .close").live("click", function(){
     $(this).parents(".lightbox").remove();

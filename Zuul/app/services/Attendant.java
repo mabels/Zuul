@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.ektorp.support.CouchDbDocument;
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Attendant extends CouchDbDocument {
   private static final long serialVersionUID = 6328662836076246928L;
 
-	@JsonIgnoreProperties(unknown=true)
-  public static class Ticket implements Serializable {
+	@JsonIgnoreProperties(ignoreUnknown=true)
+	public static class Ticket implements Serializable {
     private static final long serialVersionUID = 6328662836076246928L;
     private String lastName;
     private Boolean personalized;
@@ -37,6 +39,7 @@ public class Attendant extends CouchDbDocument {
       this.cancelled = cancelled;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown=true)
     public static class Tuple implements Serializable {
       private static final long serialVersionUID = 6328662836076246928L;
 
