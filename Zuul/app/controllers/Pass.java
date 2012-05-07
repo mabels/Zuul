@@ -145,6 +145,8 @@ public class Pass extends Controller {
 			}
     } catch (DocumentNotFoundException e) {
       	return "code not found(id not found)";
+    } catch (IllegalArgumentException e) {
+      	return "code not found(id not found)";
     }
     /* Test Code */
 		WiFi.Login login = new WiFi.Login(request);
