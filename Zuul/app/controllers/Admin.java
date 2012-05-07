@@ -1,10 +1,10 @@
 package controllers;
 
-import helpers.Mails;
 import helpers.SpringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,11 +14,12 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.libs.IO;
 import play.mvc.Controller;
+import play.mvc.With;
 import services.Attendant;
 import services.Attendants;
-import services.PassPort;
-import services.PassPorter;
 
+
+//@With(Security.class)
 public class Admin extends Controller {
 
   public static void service() {
