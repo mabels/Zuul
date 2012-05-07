@@ -153,7 +153,6 @@ NSString* const CameraDisplayDocumentUpdateWebView = @"CameraDisplayDocumentUpda
 		
 		// Initial refresh of device list
 		[self refreshDevices];
-
         
         frameCount = 0;
         scanner = new ImageScanner();
@@ -203,7 +202,6 @@ NSString* const CameraDisplayDocumentUpdateWebView = @"CameraDisplayDocumentUpda
 	[previewViewLayer addSublayer:newPreviewLayer];
 	[self setPreviewLayer:newPreviewLayer];
 	[newPreviewLayer release];
-	
     
     NSDictionary *userInfo = [NSDictionary dictionaryWithObject:baseUrl forKey:@"URL"];
     [[NSNotificationCenter defaultCenter] postNotificationName:CameraDisplayDocumentUpdateWebView object:self userInfo:userInfo];
