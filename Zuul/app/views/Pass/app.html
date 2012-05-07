@@ -50,7 +50,9 @@ LOGO-Powered by
 			$('#State').empty().append('idle');
 		}
 
-		if (url == "print" && activeDisplayId && !printed) {
+	  var match = url.match(/print.(.*)/);
+		if (match && activeDisplayId && !printed) { 
+			var printer = match[1]
 			$('#State').empty().append('starting Print');
 
 			$('.texts.active').removeClass("active");
@@ -62,7 +64,8 @@ LOGO-Powered by
 				url : 'print',
 				type: 'POST',
 				data : {
-					displayId : activeDisplayId
+					displayId : activeDisplayId,
+					printer: printer
 				},
 				contentType: 'application/x-www-form-urlencoded',
 				error : backToIdle,

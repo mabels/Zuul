@@ -87,7 +87,7 @@ public class Pass extends Controller {
   }
 
   public static void print() throws Exception {
-    play.Logger.info("WIFI:print" + params.get("displayId"));
+    play.Logger.info("WIFI:print:" + params.get("displayId") + ":" + params.get("printer"));
     final Attendant attendant = SpringUtils.getInstance()
         .getBean(Attendants.class)
         .get(Attendant.longId(params.get("displayId")));
@@ -116,10 +116,17 @@ public class Pass extends Controller {
     IO.copy(WiFi.makeQrCode(passPort.getId(), 200), fos);
     fos.close();
 
-    String[] args = new String[] { "/bin/sh", "run.sh", "-f",
+	  String printer = params.get("printer");
+		if (printer == null) {
+			printer = "QR-Acc-01";
+    }
+
+    String[] args = new String[] { "wifi_code", "-f",
         StringUtils.defaultString(attendant.getTicket().getFirstName()), "-l",
         StringUtils.defaultString(attendant.getTicket().getLastName()), "-q",
-        play.Play.configuration.get("play.tmp")+"/"+passPort.getId() + ".png" };
+        play.Play.configuration.get("play.tmp")+"/"+passPort.getId() + ".png",
+        "-p", printer 
+     };
 
     ProcessBuilder pb = new ProcessBuilder();
     List<String> sb = new ArrayList<String>(args.length);
@@ -131,6 +138,7 @@ public class Pass extends Controller {
       sb.add("-c");
       sb.add(company);
     }
+    play.Logger.info("Pass:print:cmd:" + StringUtils.join(sb.toArray(), ":"));
     pb.command(sb);
     pb.directory(new File(play.Play.configuration.get("zuul.base")+"/wifi_code"));
     Process p = pb.start();

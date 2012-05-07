@@ -3,6 +3,7 @@
 
 require 'tmpdir'
 require 'optparse'
+require "unicode_utils/upcase"
 
 def batch_latex(options)
   latex_code(options)
@@ -10,6 +11,7 @@ end
 
 def latex_code(options)
   DATA.readlines.join('').tap { |tex|
+    tex.gsub!(/@@NAME@@/) { t( options[:one] + " " + options[:three]) }
     tex.gsub!(/@@WIFI_CODE@@/) { options[:wifi_code] }
     tex.gsub!(/@@QR_CODE_FILE@@/) { options[:qr_code_file] }
     tex.gsub!(/@@INSTALL_DIR@@/) { options[:install_dir] }
@@ -36,7 +38,20 @@ options.default = ''
 OptionParser.new do |opts|
   opts.banner = "Usage: #{$0} [options]"
 
-  opts.on("-c", "--wifi_code WIFI-CODE", "") do |val|
+  opts.on("-f", "--firstname FIRSTNAME", "") do |val|
+    options[:one] = val
+  end
+  opts.on("-s", "--secondname [SECONDNAME]", "") do |val|
+    options[:two] = val
+  end
+  opts.on("-l", "--lastname LASTNAME", "") do |val|
+    options[:three] = val
+  end
+  opts.on("-c", "--company COMPANY", "") do |val|
+    options[:company] = val
+  end
+
+  opts.on("-w", "--wifi_code WIFI-CODE", "") do |val|
     options[:wifi_code] = val
   end
   opts.on("-q", "--qr_code_file FILE", "") do |val|
@@ -48,6 +63,9 @@ OptionParser.new do |opts|
   opts.on("-d", "--[no-]debug", "") do |val|
     options[:debug] = val
   end  
+  opts.on("-p", "--printer NAME", "") do |val|
+    options[:printer] = val
+  end  
 end.parse!
 
 TexFileName = 'wificode.tex'
@@ -56,6 +74,8 @@ OutFileName = 'wificode.out'
 InstallDir = File.expand_path(File.dirname(__FILE__))
 
 options[:install_dir] = InstallDir
+
+puts "Options:"+options.inspect();
 
 Dir.mktmpdir { |tmp|
   p = Dir.pwd
@@ -66,12 +86,16 @@ Dir.mktmpdir { |tmp|
 
   system("pdflatex -halt-on-error #{TexFileName} > #{OutFileName}")
 
-  if options[:output]
-    system("cp #{PdfFileName} #{p}/#{options[:output]}")
-  elsif options[:debug]
-    system("cat #{OutFileName}")    
+  if options[:printer] 
+    system("lpr -P#{options[:printer]} #{PdfFileName}")
   else
-    system("cat #{PdfFileName}")
+		if options[:output]
+			system("cp #{PdfFileName} #{p}/#{options[:output]}")
+		elsif options[:debug]
+			system("cat #{OutFileName}")    
+		else
+			system("cat #{PdfFileName}")
+		end
   end
 }
 
@@ -102,23 +126,27 @@ __END__
 
 \definecolor{blue}{cmyk}{1, 0.27, 0, 0.06}
 
-\newcommand{\wificode}[3]{%
-  \W{#1}{#2}{#3}
+\newcommand{\wificode}[4]{%
+  \W{#1}{#2}{#3}{#4}
   \newpage
 }
 
-\newcommand{\W}[3]{%
+\newcommand{\W}[4]{%
   \parbox{150mm}{%
     \includegraphics{#3/next_berlin_logo}\hfill\includegraphics{#3/drei_sechs_null_logo}%
 
-    \rule{0mm}{30mm}%
+    \rule{0mm}{20mm}%
+
+    \fontsize{20}{24} \sffamily \bfseries \centerline {#4}
 
     \centerline{\resizebox{1in}{!}{\includegraphics{#2}}}
 
     \fontsize{28}{30} \sffamily \bfseries \centerline{#1}
+
+    \fontsize{20}{24} \sffamily \bfseries \centerline wifi.nextconf.eu/{#1}
   }
 }
 
 \begin{document}
-   \wificode{@@WIFI_CODE@@}{@@QR_CODE_FILE@@}{@@INSTALL_DIR@@}
+   \wificode{@@WIFI_CODE@@}{@@QR_CODE_FILE@@}{@@INSTALL_DIR@@}{@@NAME@@}
 \end{document} 

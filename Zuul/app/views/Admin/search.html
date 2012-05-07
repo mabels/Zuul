@@ -69,7 +69,8 @@
 				url : $printDialog.find('form').attr('action'),
 				type: 'POST',
 				data : {
-					displayId : $printDialog.find('ol').data('displayidentifier')
+					displayId : $printDialog.find('ol').data('displayidentifier'),
+					printer : $printDialog.find('select[name=printer]').val()
 				},
 				contentType: 'application/x-www-form-urlencoded',
 				error : function() {

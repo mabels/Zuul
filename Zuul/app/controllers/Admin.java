@@ -47,7 +47,7 @@ public class Admin extends Controller {
   }
   
   public static void printBadge() throws Exception {
-    play.Logger.info("Admin:print" + params.get("displayId"));
+    play.Logger.info("Admin:print:" + params.get("displayId"));
     
     final Attendant attendant = SpringUtils.getInstance()
         .getBean(Attendants.class)
@@ -61,15 +61,15 @@ public class Admin extends Controller {
     fos.close();
 
     String o = params.get("printer");
-    if (o == null || o.empty()) {
+    if (o == null || o.isEmpty()) {
       o = "BADGES-D4";
     }
 
-    String[] args = new String[] { "/bin/sh", "run.sh", "-f",
+    String[] args = new String[] { "/usr/bin/ruby", "badge", "-f",
         StringUtils.defaultString(attendant.getTicket().getFirstName()), "-l",
         StringUtils.defaultString(attendant.getTicket().getLastName()), "-q",
-        "-p", o,
-        play.Play.configuration.get("play.tmp")+ "/" + attendant.getId() + ".png" };
+        play.Play.configuration.get("play.tmp")+ "/" + attendant.getId() + ".png",
+        "-p", o };
 
     ProcessBuilder pb = new ProcessBuilder();
     List<String> sb = new ArrayList<String>(args.length);
@@ -81,6 +81,7 @@ public class Admin extends Controller {
       sb.add("-c");
       sb.add(company);
     }
+    play.Logger.info("Admin:print:cmd:" + StringUtils.join(sb.toArray(), ":"));
     pb.command(sb);
     pb.directory(new File(play.Play.configuration.get("zuul.base")+"/badge"));
     Process p = pb.start();
