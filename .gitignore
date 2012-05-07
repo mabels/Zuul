@@ -1,6 +1,8 @@
-Zuul/lib/
-Zuul/conf/couchdb.properties
-Zuul/tmp/
 .DS_Store
+Zuul/lib/
+Zuul/tmp/
+Zuul/conf/couchdb.properties
+Zuul/conf/application.conf
+Zuul/conf/context.xml
 zuulUI/*.xcodeproj/project.xcworkspace
 zuulUI/*.xcodeproj/xcuserdata/*
