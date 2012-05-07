@@ -14,15 +14,35 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.ektorp.support.CouchDbDocument;
 import org.ektorp.support.TypeDiscriminator;
 
 @TypeDiscriminator("doc._id")
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class PassPort extends CouchDbDocument {
   private static final long serialVersionUID = 1L;
 
   // @TypeDiscriminator
   private String passPortId;
+  private int maxClients = 3;
+  public int getMaxClients() {
+    return maxClients;
+  }
+
+  public void setMaxClients(int maxClients) {
+    this.maxClients = maxClients;
+  }
+
+  private String baseUrl;
+  public String getBaseUrl() {
+    return baseUrl;
+  }
+
+  public void setBaseUrl(String baseUrl) {
+    this.baseUrl = baseUrl;
+  }
+
   private String displayId;
   private boolean sendEmail = true;
 

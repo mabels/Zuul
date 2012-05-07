@@ -7,6 +7,7 @@ import helpers.SpringUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -58,21 +59,23 @@ public class Pass extends Controller {
       return;
     }
     PassPort passPort = passports.get(0);
+    passPort.setBaseUrl(play.Play.configuration.getProperty("application.baseUrl"));
     render(ticket, passPort);
   }
 
   public static void create() {
     play.Logger.info("***********WIFI:create" + params.get("displayId"));
-    final Attendant attendant = SpringUtils.getInstance()
-        .getBean(Attendants.class)
+    Attendants attendants = SpringUtils.getInstance().getBean(Attendants.class);
+    final Attendant attendant = attendants
         .get(Attendant.longId(params.get("displayId")));
     if (attendant == null) {
       render("createError.html");
       return;
     }
+    Collection<Ticket> ticket = attendants.findByEmail(attendant.getTicket().getEmail());
     final PassPort passPort = SpringUtils.getInstance()
         .getBean(PassPorter.class)
-        .createPass(attendant.getId(), new PassPorter.FirstTime() {
+        .createPass(attendant.getId(), ticket.size()*3, new PassPorter.FirstTime() {
 
           @Override
           public void run(PassPort pp) {
@@ -88,16 +91,18 @@ public class Pass extends Controller {
 
   public static void print() throws Exception {
     play.Logger.info("WIFI:print:" + params.get("displayId") + ":" + params.get("printer"));
-    final Attendant attendant = SpringUtils.getInstance()
-        .getBean(Attendants.class)
+    Attendants attendants = SpringUtils.getInstance()
+        .getBean(Attendants.class);
+    final Attendant attendant = attendants
         .get(Attendant.longId(params.get("displayId")));
     if (attendant == null) {
       render("createError.html");
       return;
     }
+    Collection<Ticket> ticket = attendants.findByEmail(attendant.getTicket().getEmail());
     final PassPort passPort = SpringUtils.getInstance()
         .getBean(PassPorter.class)
-        .createPass(attendant.getId(), new PassPorter.FirstTime() {
+        .createPass(attendant.getId(), ticket.size() * 3, new PassPorter.FirstTime() {
 
           @Override
           public void run(PassPort pp) {
@@ -149,7 +154,7 @@ public class Pass extends Controller {
   }
 
   public static String tryLogin(String passPortId) {
-    play.Logger.info("grantAccess to="+passPortId);
+    play.Logger.info("tryLogin to="+passPortId);
     final PassPorter passPorter = SpringUtils.getInstance().getBean(PassPorter.class);
     PassPort passPort;
     try {
@@ -158,7 +163,14 @@ public class Pass extends Controller {
       	return "code not found(no displayId)";
 			}
     } catch (DocumentNotFoundException e) {
-      	return "code not found(id not found)";
+      final Attendants attendants = SpringUtils.getInstance().getBean(Attendants.class);
+      Collection<Ticket> tickets = attendants.findByEmail(passPortId);
+      if (tickets.isEmpty()) {
+      	return "code not found";
+      }
+      play.Logger.info("found email:"+passPortId+":"+tickets.size());
+      //redirect(play.Play.configuration.get("application.baseUrl")+tickets.iterator().next().toString());
+      return play.Play.configuration.get("application.baseUrl")+tickets.iterator().next().getShortDisplayIdentifier();
     } catch (IllegalArgumentException e) {
       	return "code not found(id not found)";
     }

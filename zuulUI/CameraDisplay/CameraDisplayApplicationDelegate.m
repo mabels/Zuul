@@ -18,10 +18,12 @@
     }
     // send the first window (the opened document) to fullscreen if not in fullscreen yet
     if ([[NSApplication sharedApplication] windows].count > 0) {
-        NSWindow* window = [[[NSApplication sharedApplication] windows] objectAtIndex:0];
+        
+         NSWindow* window = [[[NSApplication sharedApplication] windows] objectAtIndex:0];
         if ((window.styleMask & NSFullScreenWindowMask) != NSFullScreenWindowMask) {
             [window toggleFullScreen:self];
         }
+         
     }
 }
 

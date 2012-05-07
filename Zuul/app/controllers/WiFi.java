@@ -104,6 +104,8 @@ public class WiFi extends Controller {
 			}
 			this.appUrl = play.Play.configuration.get("application.baseUrl")+"WiFi/askLogin";
     }
+    public String errorClass;
+    public String errorText;
 		public String appUrl;
     public String host;
     public String remoteAddress;
@@ -121,10 +123,17 @@ public class WiFi extends Controller {
     }
     if (login.code != null) {
       String code = Pass.tryLogin(login.code.trim());
+      play.Logger.info("tryLogin:return="+ code);
+      if (code.startsWith("http")) {
+        redirect(code);
+      }
       if (code.equals("granted")) {
         login.granted = true;
         redirect(play.Play.configuration.get("application.baseUrl")+login.code);
         return;
+      } else {
+        login.errorClass = "error";
+        login.errorText = code;
       }
     }
     render(login);
