@@ -1,3 +1,5 @@
 Zuul/lib/
 Zuul/conf/couchdb.properties
 Zuul/tmp/
+Zuul/conf/application.conf
+Zuul/conf/context.xml

@@ -1,43 +1,42 @@
 #{extends 'main.html' /}
+<h1 class="h1">Search</h1>
 
-<style type="text/css">
-.searchTable tbody tr:hover {
-	background: gray;
-}
-.printDialog { 
-	display: none; 
-}
-</style>
-
-
-Search
-
-<form action="/WiFi/Admin/search/service"  class="searchForm" >
-  <input type="text" placeholder="search" name="q" />
+<form action="/WiFi/Admin/search/service" class="searchForm" >
+  <div class="formrow">
+        <div class="formitem">
+            <input type="text" placeholder="Query" name="q" />
+        </div>
+        <div class="formitem">
+            <input type="submit" value="Search" class="button" />
+        </div>
+    </div>
+    <div class="inforow">
+        <a href="/WiFi/Admin/search/formAttendant" class="openNewAttendant">Add attendant</a>
+    </div>
 </form>
-<a class="openNewAttendant" href="/WiFi/Admin/search/formAttendant">new</a>
 
 <table class="searchTable">
-<thead>
-<th>displayId</th>
-<th>Vorname</th>
-<th>Nachname</th>
-
-
-<th>Company</th>
-<th>email</th>
-</thead>
-<tbody>
-</tbody>
+    <thead class="h6">
+        <th>displayId</th>
+        <th>Vorname</th>
+        <th>Nachname</th>
+        <th>Company</th>
+        <th>email</th>
+    </thead>
+    <tbody>
+    </tbody>
 </table>
 
-<div class="printDialog">
-<table>
-</table>
-<form action="/WiFi/Admin/printBadge">
-<input type="submit" name="cancel" value="abbrechen" />
-<input type="submit" name="print" value="drucken" />
-</form>
+<div class="lightbox printDialog">
+    <h2 class="h1">Print preview</h2>
+    <ol>
+        <li>Lorem</li>
+    </ol>
+    <!-- <div><img src="/WiFi/public/images/logos/lg_next.png" width="152" height="75" alt="lg_next" /></div> -->
+    <form action="/WiFi/Admin/printBadge">
+        <input type="submit" name="cancel" value="Cancel" class="button" />
+        <input type="submit" name="print" value="Print" class="button" />
+    </form>
 </div>
 
 <script type="text/javascript" src="/WiFi/public/javascripts/jquery-1.7.2.min.js"></script>
@@ -62,12 +61,11 @@ Search
 	  var $my = $(this)
 	  var $printDialog = $my.closest('.printDialog');
 	  if ($my.attr('name') == "print") {
-		  console.log('printer');
 		  $.ajax({
 				url : $printDialog.find('form').attr('action'),
 				type: 'POST',
 				data : {
-					displayId : $printDialog.find('table tr').data('displayidentifier')
+					displayId : $printDialog.find('ol').data('displayidentifier')
 				},
 				contentType: 'application/x-www-form-urlencoded',
 				error : function() {
@@ -82,12 +80,20 @@ Search
 	  }
   })
   $('.searchTable tbody tr').live('click', function() {
-	  $('.printDialog table').empty().append($(this).clone());
+      var $list = $("<ol>"),
+          $row = $(this).clone();
+      $row.find("td").each(function(idx,elm){
+	    $("<li>").text($(elm).text()).appendTo($list);
+	  });
+	  $list.attr("data-displayidentifier", $row.data('displayidentifier'));
+	  $('.printDialog ol').replaceWith($list);
+	  //$('.printDialog img').attr("src","/WiFi/qrCode/"+$row.data('passport'));
 	  $('.printDialog').show();
 	  
-	  console.log("JOJO")
-	  console.log($(this).data('displayidentifier'));
-  })
+  });
+  $(".lightbox .close").live("click", function(){
+    $(this).parents(".lightbox").remove();
+  });
   $('.openNewAttendant').click(function(e) {
 	e.preventDefault();
     $('.formNewAttendant').remove();
@@ -96,9 +102,7 @@ Search
       $form.bind('submit', function(e) {
     	  e.preventDefault();
     	  var data = $form.serializeArray();
-    	  console.log("DATA:", data); 
     	  $.post($form.attr("action"), data, function(result) {
-    		  console.log("SUBMIT", result)
     		  $('.formNewAttendant').remove();
     		  $searchBox.val(result.id)
     		  $searchBox.autocomplete('search', result.ticket.displayIdentifier)

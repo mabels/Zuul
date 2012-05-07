@@ -7,6 +7,7 @@
 @next-body:#f2f2f2;
 @next-input-border-grey: darken(@next-light-grey, 20%);
 @next-grey:@next-light-grey;
+@next-cyan:#00A0E4;
 
 //hover
 @next-black-hover: lighten(@next-black, 20%);
@@ -16,11 +17,12 @@
 @next-headerHeight:100px;
 @next-footerHeight:100px;
 
-@next-pageTopPadding:20px;
-@next-MinPageWidth:360px;
+@next-pagePadding:20px;
+@next-pagePaddingSmall:10px;
+@next-MinPageWidth:100%;
 @next-MaxPageWidth:980px;
 @next-base-fontsize:16px;
-@next-base-lineheight:16px;
+@next-base-lineheight:20px;
 @next-paragraph-margin:18px;
 
 @next-image-path:"/WiFi/public/images";
@@ -58,6 +60,31 @@
   }
   .none(){
     .next-appearance();
+  }
+}
+
+// shadow ---------------------------------------------------------------------
+
+.next-shadow(@val:none){
+  -webkit-box-shadow:@val;
+  -moz-box-shadow:@val;
+  -ms-box-shadow:@val;
+  -o-box-shadow:@val;
+  box-shadow:@val;
+}
+
+#next-shadow{
+  .none(){
+    .next-shadow();
+  }
+  .generic(@val){
+    .next-shadow(@val);
+  }
+  .tiny(){
+    .next-shadow(0 0 3px rgba(85,85,85,.3));
+  }
+  .middle() {
+      .next-shadow(0 0 10px rgba(0,0,0,.2));
   }
 }
 

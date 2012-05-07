@@ -1,13 +1,19 @@
-Hallo,
+Your authentication code for the NEXT12 Wi-Fi
+=============================================
 
-wir schicken ihnen ein Email mit dem Zugangs Code fuer die
-Next:
+Hello ${ticket.getFirstName()},
 
-Code:
-${passPort}
-Url:
-${play.Play.configuration.get("application.baseUrl")}${passPort}
+just in case you need it - this is your personal authentication code for the NEXT12 Wi-Fi: ${passPort}
 
-${ticket.email}
+You can use it to register your devices.
 
-Danke
+
+Or use this link to log in: ${play.Play.configuration.get("application.baseUrl")}${passPort}
+
+
+Your code is associated with your E-Mail: ${ticket.email}
+
+Help is available at the accreditation desk.
+
+Cheers,
+Your SinnerSchrader Wi-Fi Team @ NEXT Berlin 2012

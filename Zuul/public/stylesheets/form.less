@@ -1,5 +1,5 @@
 form{
-    max-width: @next-MinPageWidth;
+    max-width: 360px;
 }
 
 button,
@@ -27,9 +27,9 @@ input[type=checkbox]{
 .button{
     display: inline-block;
     border: 0;
-    font-size:24px;
+    font-size:18px;
     line-height: normal;
-    padding: 10px 40px;
+    padding: 6px 20px;
     margin: 0;
     text-align: center;
     text-transform: uppercase;
@@ -50,7 +50,7 @@ input[type=checkbox]{
         pointer-events:none;
     }
 }
-//
+
 input,
 select{
     &[disabled]{
@@ -68,10 +68,10 @@ input[type=tel],
 input[type=password],
 textarea{
     width: 100%;
-    font-size:24px;
+    font-size:18px;
     line-height: normal;
     border: 1px solid @next-input-border-grey;
-    padding: 10px;
+    padding: 5px;
     background-color: @next-grey;
     #next-font > .Klavika;
     #next-box > .border;
@@ -84,31 +84,7 @@ textarea{
         border-color: @next-black;
     }
 }
-//input[type=search],
-//input[type=text],
-//input[type=email],
-//input[type=number],
-//input[type=month],
-//input[type=tel],
-//input[type=password]{
-//    height: 28px;
-//    *+html & {
-//        padding: 1px 2px;
-//        height: 22px;
-//    }
-//}
-//input[type="search"] {
-//    -webkit-appearance: textfield; //rm appearance set to searchfield in S5, Chrome
-//    -moz-box-sizing: content-box;
-//    -webkit-box-sizing: content-box; //box-sizing set to border-box in S5, Chrome (include -moz to future-proof)
-//    box-sizing: content-box;
-//    }
-//
-//input[type="search"]::-webkit-search-decoration,
-//input[type="search"]::-webkit-search-cancel-button {
-//    -webkit-appearance: none; //rm inner padding and cancel button in S5, Chrome on OS X
-//}
-//
+
 .formrow {
     margin: 0 0 10px;
     position:relative;
@@ -117,6 +93,9 @@ textarea{
 //            top:-26px;
 //        }
 //    }
+    .formitem{
+        display: inline-block;
+    }
 }
 
 .buttonrow{
@@ -124,6 +103,10 @@ textarea{
     border-top: 1px solid @next-light-grey;
     padding: 10px 0 0;
     text-align: right;
+}
+
+.inforow{
+    margin: 20px 0 0;
 }
 
 //.error{
@@ -155,35 +138,7 @@ textarea{
 //    }
 //    
 //}
-//input,
-//select,
-//.input,
-//.radiogroup {
-//    display:inline-block;
-//    margin:5px 0;
-//}
-//select {
-//    margin-top:10px;
-//}
-//.input {
-//    line-height:28px;
-//    color: lighten(@next-black, 40%);
-//}
-//
-//.buttons {
-//    margin: 20px 0 30px;
-//    overflow:hidden;
-//}
-//
-//.asterisk {
-//    font-size:11px;
-//    margin:0;
-//    &:before {
-//        content: "*";
-//        padding: 0 2px 0 0;
-//    }
-//}
-//
+
 //.tooltip{
 //    display: none;
 //    position:absolute;
@@ -225,100 +180,12 @@ textarea{
 //        border-width:8px;
 //    }
 //}
-//
-//
-//input[type=number],
-//input[type=date]{
-//    &::-webkit-inner-spin-button,
-//    &::-webkit-outer-spin-button{
-//        -webkit-appearance: none;
-//        margin: 0;
-//    }
-//}
-//
-//select{
-//    border:1px solid @next-off-white;
-//    display:inline-block;
-//    option{
-//        text-transform: uppercase;
-//    }
-//}
-//
-//
-//
-//form{
-//    fieldset{
-//        margin: 0 0 20px;
-//        .h2{
-//            padding: 20px 0;
-//        }
-//    }
-//    &.disabled{
-//        opacity: 0.25;
-//    }
-//}
-//
-//
-//
-//.formrow{
-//    @labelwidth:190px;
-//    position: relative;
-//    margin: 0 0 10px;
-//    .error{
-//        border-color:@next-red;
-//        + span.tooltip{
-//            display: block;
-//            text-transform: none;
-//        }
-//    }
-//    &.chooser{
-//        overflow: hidden;
-//        margin-top: 15px;
-//        label{
-//            width: auto;
-//            margin-right: 30px;
-//            font-weight: normal;
-//            text-transform: none;
-//            > span{
-//                display: block;
-//                padding: 0 0 0 20px;
-//            }
-//            &:first-child{
-//                float: left;
-//                width: 165px;
-//                text-transform: uppercase;
-//            }
-//        }
-//    }
-//    &.buttons{
-//        overflow: hidden;
-//        text-align: right;
-//        .button{
-//            display:inline-block;
-//        }
-//    }
-//    label{
-//        display: inline-block;
-//        padding: 4px 0 0;
-//        width: @labelwidth;
-//        text-transform: uppercase;
-//        vertical-align: top;
-//    }
-//    input[type=search],
-//    input[type=text],
-//    input[type=number],
-//    input[type=month],
-//    input[type=tel],
-//    input[type=password],
-//    input[type=email],
-//    textarea,
-//    select,
-//    > .text{
-//        width: 300px;
-//    }
-//    > .text{
-//        padding: 4px 0 0;
-//        display: inline-block;
-//        margin: 0 0 10px;
-//    }
-//}
+
+input[type=number],
+input[type=date]{
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button{
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}

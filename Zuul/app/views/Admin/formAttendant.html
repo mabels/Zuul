@@ -1,14 +1,21 @@
-
-
-<form class="formNewAttendant" action="/WiFi/Admin/search/newAttendant" >
-
-<input type="text" placeholder="FirstName" name="ticket.firstName" />
-<br/>
-<input type="text" placeholder="LastName" name="ticket.lastName" />
-<br/>
-<input type="text" placeholder="Company" name="ticket.company" />
-<br/>
-<input type="text" placeholder="Email" name="ticket.email" />
-<br/>
-<input type="submit" value="Create" />
-</form>
+<div class="lightbox formNewAttendant">
+    <h1 class="h1">Enter attendant data</h1>
+    <form action="/WiFi/Admin/search/newAttendant" >
+        <div class="formrow">
+            <input type="text" placeholder="FirstName" name="ticket.firstName" />
+        </div>
+        <div class="formrow">
+            <input type="text" placeholder="LastName" name="ticket.lastName" />
+        </div>
+        <div class="formrow">
+            <input type="text" placeholder="Company" name="ticket.company" />
+        </div>
+        <div class="formrow">
+            <input type="text" placeholder="E-Mail" name="ticket.email" />
+        </div>
+        <div class="buttonrow">
+            <input type="submit" value="Create" class="button" />
+        </div>
+    </form>
+    <span class="close">×</span>
+</div>
