@@ -174,12 +174,18 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     if (pp.getClients() == null) {
       pp.setClients(new ArrayList<PassPort.Ip2Mac>(3));
     }
+		boolean found = false;
     for (Ip2Mac im : pp.getClients()) {
       if (im.getIp().equals(ip) && im.getMac().equals(mac)) {
 				play.Logger.info("ip2mac is registered");
-        return "granted";
+				im.setPid(0);
+				found = true;
       }
     }
+		if (found) { 
+				db.update(pp);
+        return "granted";
+		}
     if (pp.getClients().size() >= pp.getMaxClients()) {
       return "too many clients";
     }
