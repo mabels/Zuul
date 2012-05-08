@@ -115,10 +115,10 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
         while (true) {
           try {
             int result = getUnusedKeyCount();
-            if (result < 50) {
+            if (result < 500) {
               Set<String> codes = new HashSet<String>();
               String base = "23456789ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz";
-              for (int i = 0; i < 100; ++i) {
+              for (int i = 0; i < 10000; ++i) {
                 long val = UUID.randomUUID().getLeastSignificantBits();
                 String code = "";
                 for (int j = 0; j < 64; ++j) {
