@@ -226,19 +226,38 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
 
         @Override
         public void run() {
-          PassPort.Ip2Mac.clearIPTables();
+          //PassPort.Ip2Mac.clearIPTables();
           q.addAll(CollectionUtils.collect(my.getAll(), new Transformer() {
 
             @Override
             public Object transform(Object arg0) {
-              final PassPort pp = (PassPort) arg0;
+              final String pp = ((PassPort)arg0).getId();
               return new Runnable() {
 
                 @Override
                 public void run() {
-                  if (pp.openFireWall(false)) {
-                    db.update(pp);
-                  }
+									for(int i = 0; i < 10; ++i) {
+										try { 
+											PassPort my = db.get(PassPort.class, pp);	
+											if (my.openFireWall(false)) {
+												try { 
+													 db.update(my);
+													 play.Logger.info("openFireWall:done:" + my.getId()+":"+i);
+													 return;
+												} catch (org.ektorp.UpdateConflictException e) {
+													 play.Logger.info("Retry openfirewall:for:" + my.getId());
+												}	
+											} else {
+												//play.Logger.info("no change" + my.getId());
+												return;
+											}
+										} catch (Exception e) {
+											play.Logger.error("openFireWall failed:"+pp+":"+e);
+											return;
+										}	
+									}
+									play.Logger.error("openFireWall to  much" + pp);
+									return;
                 }
               };
             }
