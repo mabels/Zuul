@@ -115,10 +115,10 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
         while (true) {
           try {
             int result = getUnusedKeyCount();
-            if (result < 50) {
+            if (result < 500) {
               Set<String> codes = new HashSet<String>();
               String base = "23456789ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz";
-              for (int i = 0; i < 100; ++i) {
+              for (int i = 0; i < 10000; ++i) {
                 long val = UUID.randomUUID().getLeastSignificantBits();
                 String code = "";
                 for (int j = 0; j < 64; ++j) {
@@ -174,12 +174,18 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     if (pp.getClients() == null) {
       pp.setClients(new ArrayList<PassPort.Ip2Mac>(3));
     }
+		boolean found = false;
     for (Ip2Mac im : pp.getClients()) {
       if (im.getIp().equals(ip) && im.getMac().equals(mac)) {
 				play.Logger.info("ip2mac is registered");
-        return "granted";
+				im.setPid(0);
+				found = true;
       }
     }
+		if (found) { 
+				db.update(pp);
+        return "granted";
+		}
     if (pp.getClients().size() >= pp.getMaxClients()) {
       return "too many clients";
     }
@@ -226,19 +232,38 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
 
         @Override
         public void run() {
-          PassPort.Ip2Mac.clearIPTables();
+          //PassPort.Ip2Mac.clearIPTables();
           q.addAll(CollectionUtils.collect(my.getAll(), new Transformer() {
 
             @Override
             public Object transform(Object arg0) {
-              final PassPort pp = (PassPort) arg0;
+              final String pp = ((PassPort)arg0).getId();
               return new Runnable() {
 
                 @Override
                 public void run() {
-                  if (pp.openFireWall(false)) {
-                    db.update(pp);
-                  }
+									for(int i = 0; i < 10; ++i) {
+										try { 
+											PassPort my = db.get(PassPort.class, pp);	
+											if (my.openFireWall(false)) {
+												try { 
+													 db.update(my);
+													 play.Logger.info("openFireWall:done:" + my.getId()+":"+i);
+													 return;
+												} catch (org.ektorp.UpdateConflictException e) {
+													 play.Logger.info("Retry openfirewall:for:" + my.getId());
+												}	
+											} else {
+												//play.Logger.info("no change" + my.getId());
+												return;
+											}
+										} catch (Exception e) {
+											play.Logger.error("openFireWall failed:"+pp+":"+e);
+											return;
+										}	
+									}
+									play.Logger.error("openFireWall to  much" + pp);
+									return;
                 }
               };
             }

@@ -107,7 +107,8 @@
 	e.preventDefault();
     $('.formNewAttendant').remove();
     $.get($(this).attr('href'), function(data) { 
-      var $form = $(data)
+			var $data = $(data)
+      var $form = $data.find('form')
       $form.bind('submit', function(e) {
     	  e.preventDefault();
     	  var data = $form.serializeArray();
@@ -117,7 +118,7 @@
     		  $searchBox.autocomplete('search', result.ticket.displayIdentifier)
     	  })
       })
-      $('body').append($form)
+      $('body').append($data)
     })
 
   })
