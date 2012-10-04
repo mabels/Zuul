@@ -65,14 +65,14 @@ public class WiFi extends Controller {
   }
 
   /*
-                     proxy_set_header  X-Real-Scheme $scheme;
-                      proxy_set_header  X-Real-IP     $remote_addr;
-                      proxy_set_header  X-Real-Host   $http_host;
-                      proxy_set_header  X-Real-Uri    $request_uri;
+    proxy_set_header  X-Real-Scheme $scheme;
+    proxy_set_header  X-Real-IP     $remote_addr;
+    proxy_set_header  X-Real-Host   $http_host;
+    proxy_set_header  X-Real-Uri    $request_uri;
    */
   public static void catchAll() {
 		Login login = new Login(request);
-    render("WiFi/catchAll.html");
+    render("WiFi/catchAll.html", login);
   }
   
 

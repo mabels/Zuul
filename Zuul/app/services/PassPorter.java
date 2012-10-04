@@ -128,7 +128,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
                   }
                   if (code.length() >= 5) {
                     codes.add(code);
-                    play.Logger.info("DOIT:" + code);
+                    play.Logger.debug("DOIT:" + code);
                     break;
                   }
                   val = val >> 5;

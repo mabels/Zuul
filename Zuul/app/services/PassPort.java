@@ -90,9 +90,11 @@ public class PassPort extends CouchDbDocument {
       ProcessBuilder pb = new ProcessBuilder();
       pb.command(cmd);
       try {
-        Process p = pb.start();
+        pb.start().wait();
       } catch (IOException e) {
-        play.Logger.error("Failed to start:IOException:"+str);
+        play.Logger.error(e, "Failed to start:IOException:"+str);
+      } catch (InterruptedException e) {
+        play.Logger.error(e, "Failed to start:InterruptedException:"+str);
       } 
     }
 
