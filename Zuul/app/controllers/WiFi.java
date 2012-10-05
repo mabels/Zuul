@@ -72,7 +72,7 @@ public class WiFi extends Controller {
    */
   public static void catchAll() {
 		Login login = new Login(request);
-    render("WiFi/catchAll.html");
+    render("WiFi/catchAll.html", login);
   }
   
 

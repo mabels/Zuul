@@ -14,6 +14,7 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.DbInfo;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.DocumentOperationResult;
+import org.ektorp.Options;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
@@ -247,7 +248,9 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
 											PassPort my = db.get(PassPort.class, pp);	
 											if (my.openFireWall(false)) {
 												try { 
-													 db.update(my);
+													 if (play.Play.configuration.get("application.mode").equals("prod")) {
+														 db.update(my);
+													 }
 													 play.Logger.info("openFireWall:done:" + my.getId()+":"+i);
 													 return;
 												} catch (org.ektorp.UpdateConflictException e) {
@@ -297,13 +300,23 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
 
               @Override
               public void run() {
-                if (dc.isDeleted()) {
-                  return;
-                }
-                PassPort pp = my.get(dc.getId());
-                if (pp.openFireWall(true)) {
-                  db.update(pp);
-                }
+								try {
+									if (dc.isDeleted()) {
+play.Logger.info("**** isDeleted():"+dc.getId()+":"+dc.getRevision());
+										Options op = new Options();
+										op.revision(dc.getRevision());
+										PassPort pp = db.get(PassPort.class, dc.getId(), op);
+										return;
+									}
+									PassPort pp = my.get(dc.getId());
+									if (pp.openFireWall(true)) {
+									 	if (play.Play.configuration.get("application.mode").equals("prod")) {
+											db.update(pp);
+										}
+									}
+								} catch (Exception e) {
+            			play.Logger.error("update feed aborted", e);
+								}
               }
             });
           } catch (InterruptedException e) {
