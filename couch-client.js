@@ -180,6 +180,7 @@ console.log("Bulk Getting %s documents", require('util').inspect(keys));
       request("POST", path, {keys: keys}, function (err, results) {
         if (err) {
 debugger;
+console.log("PENDING:", typeof(pending))
           pending.forEach(function (callback) {
             callback(err);
           });
