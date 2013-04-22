@@ -8,7 +8,7 @@ just in case you need it - this is your personal authentication code for the NEX
 You can use it to register your devices.
 
 
-Or use this link to log in: ${play.Play.configuration.get("application.baseUrl")}${passPort}
+Or use this link to log in: ${play.Play.configuration.get("application.baseUrl")}/${passPort}
 
 
 Your code is associated with your E-Mail: ${ticket.email}

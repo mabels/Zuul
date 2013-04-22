@@ -1,6 +1,7 @@
 package controllers;
 
 import helpers.ResolvArp;
+import helpers.SpringUtils;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -12,11 +13,15 @@ import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
+import org.ektorp.DocumentNotFoundException;
+
 import play.cache.CacheFor;
 import play.mvc.Controller;
 import play.mvc.Http.Header;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
+import services.Attendant;
+import services.Attendants;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -24,6 +29,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
+import controllers.Pass.TryLoginReturn;
 
 public class WiFi extends Controller {
 
@@ -102,7 +109,7 @@ public class WiFi extends Controller {
 			} else {
 				this.url = request.url;
 			}
-			this.appUrl = play.Play.configuration.get("application.baseUrl")+"WiFi/askLogin";
+			this.appUrl = play.Play.configuration.get("application.baseUrl")+"/WiFi/askLogin";
     }
     public String errorClass;
     public String errorText;
@@ -138,17 +145,14 @@ public class WiFi extends Controller {
       login.macAddress = ResolvArp.ip2mac(login.remoteAddress);
     }
     if (login.getCode() != null) {
-      String code = Pass.tryLogin(login.getCode().trim());
-      play.Logger.info("tryLogin:return="+ code);
-      if (code.startsWith("http")) {
-        redirect(code);
-      }
-      if (code.equals("granted")) {
+      TryLoginReturn tlr = Pass.tryLogin(login.getCode().trim());
+      play.Logger.info("tryLogin:return="+ tlr.errorText);
+      if (tlr.granted) {
         login.granted = true;
         redirect(play.Play.configuration.get("application.baseUrl")+"/grant/"+login.getCode());
       } else {
         login.errorClass = "error";
-        login.errorText = code;
+        login.errorText = tlr.errorText;
       }
     }
     render(login);

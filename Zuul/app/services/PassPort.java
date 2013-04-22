@@ -219,9 +219,10 @@ public class PassPort extends CouchDbDocument {
       return false;
     }
     String now = PassPort.getCurrentTimeStamp();
-    Long pid = PassPort.getProcessID();
+    long pid = PassPort.getProcessID();
     boolean changed = false;
     for (Ip2Mac client : clients) {
+      play.Logger.info("client:"+client.mac + ":"+client.getPid()+"=="+pid);
       if (client.getPid() == pid) {
         continue;
       }
@@ -239,6 +240,7 @@ public class PassPort extends CouchDbDocument {
       client.setPid(pid);
       client.setUpdated(now);
     }
+    play.Logger.info("openFireWall:"+changed);
     return changed;
   }
 

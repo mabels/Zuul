@@ -212,6 +212,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
     initialLoader(q);
   }
 
+  
   private void initialLoader(final BlockingQueue<Runnable> q) {
     synchronized (q) {
       final PassPorter my = this;
@@ -221,7 +222,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
         public void run() {
           // PassPort.Ip2Mac.clearIPTables();
           q.addAll(CollectionUtils.collect(my.getAll(), new Transformer() {
-
+        
             @Override
             public Object transform(Object arg0) {
               final String pp = ((PassPort) arg0).getId();
@@ -232,12 +233,15 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
                   for (int i = 0; i < 10; ++i) {
                     try {
                       PassPort my = db.get(PassPort.class, pp);
+                      play.Logger.info("initialLoader:"+my.getDisplayId());
                       if (my.openFireWall(false)) {
                         try {
+                          /*
                           if (play.Play.configuration.get("application.mode")
                               .equals("prod")) {
-                            db.update(my);
-                          }
+                          */
+                          db.update(my);
+                          //}
                           play.Logger.info("openFireWall:done:" + my.getId()
                               + ":" + i);
                           return;
@@ -266,6 +270,11 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
     }
   }
 
+ 
+//  public BlockingQueue<Runnable> getQ() {
+//    return q;
+//  }
+  //private final Set<String> blockIds = new Conc<String>();
   private final BlockingQueue<Runnable> q = new LinkedBlockingQueue<Runnable>();
 
   private void feedChanges() {
@@ -285,6 +294,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
         while (feed.isAlive()) {
           try {
             final DocumentChange dc = feed.next();
+            play.Logger.info("DocumentChange:"+dc.getId()+":"+dc.getRevision()+":"+dc.getSequence());
             q.add(new Runnable() {
 
               @Override
@@ -299,11 +309,17 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
                     return;
                   }
                   PassPort pp = my.get(dc.getId());
+                  play.Logger.info("feedChanges:"+pp.getDisplayId());
                   if (pp.openFireWall(true)) {
-                    if (play.Play.configuration.get("application.mode").equals(
+                    /*
+                     * if (play.Play.configuration.get("application.mode").equals(
                         "prod")) {
+                     */
+                      //play.Logger.info("db:Update:pre:"+dc.getId()+":"+dc.getRevision());
                       db.update(pp);
-                    }
+                      //play.Logger.info("db:Update:pst:"+dc.getId()+":"+dc.getRevision());
+                      
+                    //}
                   }
                 } catch (Exception e) {
                   play.Logger.error("update feed aborted:"+e.getMessage());

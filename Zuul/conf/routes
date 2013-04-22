@@ -13,7 +13,7 @@ POST    /WiFi/Pass/create				        Pass.create
 GET     /WiFi/Pass/create/{<\d{12}>displayId}   Pass.create
 POST    /WiFi/Pass/print				   Pass.print
 GET     /WiFi/Pass/reloadMacs			   Pass.reloadMacs
-GET		/WiFi/Pass/port/{<\w{5}>passPortId} Pass.grantAccessJsonp	
+GET		/WiFi/Pass/port/{<\d{4}-\d{4}\-\d{4}>passPortId} Pass.grantAccessJsonp	
 
 GET  /library/test/success.html  Apple.success
 

@@ -13,6 +13,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.ektorp.DocumentNotFoundException;
 
+import play.Logger;
 import play.libs.IO;
 import play.mvc.Controller;
 import services.Attendant;
@@ -31,16 +32,15 @@ public class Pass extends Controller {
   }
 
   public static void longDisplayId(String displayId) {
-    // FALSCH
-    
-    String code = Pass.tryLogin(displayId.trim());
-    play.Logger.info("tryLogin:return="+ code);
-    if (code.startsWith("http")) {
-      redirect(code);
-    } else if (code.startsWith("granted")) {
-      redirect(play.Play.configuration.get("application.baseUrl")+"/grant/"+displayId);
+    TryLoginReturn tlr = Pass.tryLogin(displayId.trim());
+    play.Logger.info("longDisplayId:return=" + tlr.errorText + ":"
+        + tlr.granted);
+    if (tlr.granted) {
+      redirect(play.Play.configuration.get("application.baseUrl") + "/grant/"
+          + displayId);
     }
-    redirect(play.Play.configuration.get("application.baseUrl")+"/WiFi/askLogin");
+    redirect(play.Play.configuration.get("application.baseUrl")
+        + "/WiFi/askLogin");
   }
 
   public static void displayId(String displayId) {
@@ -64,22 +64,23 @@ public class Pass extends Controller {
     } catch (DocumentNotFoundException e) {
       play.Logger.info("SelfRegister Pass:displayId" + params.get("displayId"));
       redirect(play.Play.configuration.get("application.baseUrl")
-          + "WiFi/Pass/create/" + params.get("displayId"));
+          + "/WiFi/Pass/create/" + params.get("displayId"));
       return;
     }
   }
-  
+
   private static class FirstTime implements PassPorter.FirstTime {
     Ticket ticket;
     String id;
-    public FirstTime(Ticket ticket, String id) {
+      public FirstTime(Ticket ticket, String id) {
       this.ticket = ticket;
       this.id = id;
     }
+
     public void run(PassPort pp) {
       Mails.passPortCreated(ticket, id);
     }
-    
+
   }
 
   public static void create() {
@@ -91,14 +92,15 @@ public class Pass extends Controller {
       render("createError.html");
       return;
     }
-    final PassPort passPort = SpringUtils.getInstance()
-        .getBean(PassPorter.class)
-        .createPass(attendant.getId(), 3, new FirstTime(attendant.getTicket(), attendant.getId()));
+    final PassPorter passPorter = SpringUtils.getInstance().getBean(
+        PassPorter.class);
+    final PassPort passPort = passPorter.createPass(attendant.getId(), 3,
+        new FirstTime(attendant.getTicket(), attendant.getId()));
     if (passPort == null) {
       render("createError.html");
       return;
     }
-    redirect(play.Play.configuration.get("application.baseUrl")
+    redirect(play.Play.configuration.get("application.baseUrl") + "/"
         + attendant.getTicket().getShortDisplayIdentifier());
   }
 
@@ -112,9 +114,10 @@ public class Pass extends Controller {
       render("createError.html");
       return;
     }
-    final PassPort passPort = SpringUtils.getInstance()
-        .getBean(PassPorter.class)
-        .createPass(attendant.getId(), 3, new FirstTime(attendant.getTicket(), attendant.getId()));
+    final PassPorter passPorter = SpringUtils.getInstance().getBean(
+        PassPorter.class);
+    final PassPort passPort = passPorter.createPass(attendant.getId(), 3,
+        new FirstTime(attendant.getTicket(), attendant.getId()));
     if (passPort == null) {
       render("createError.html");
       return;
@@ -165,24 +168,49 @@ public class Pass extends Controller {
     render();
   }
 
-  public static String tryLogin(String attendantId) {
+  public static class TryLoginReturn {
+    public boolean granted = false;
+    public Attendant attendant;
+    public PassPort passPort;
+    public String errorText;
+  }
+
+  public static TryLoginReturn tryLogin(String attendantId) {
+    final TryLoginReturn tlr = new TryLoginReturn();
     play.Logger.info("tryLogin to=" + attendantId);
-    Attendant attendant;
     try {
       final Attendants attendants = SpringUtils.getInstance().getBean(
           Attendants.class);
-      // Test Existenz
-      attendant = attendants.get(attendantId);
+      tlr.attendant = attendants.get(attendantId);
       play.Logger.info("found id:" + attendantId);
-      // redirect(play.Play.configuration.get("application.baseUrl")+tickets.iterator().next().toString());
-      // return play.Play.configuration.get("application.baseUrl")
-      // + attendant.getTicket().getShortDisplayIdentifier();
     } catch (DocumentNotFoundException e) {
-      return "code not found";
+      tlr.errorText = "code not found";
+      return tlr;
     } catch (IllegalArgumentException e) {
-      return "code not found(id not found)";
+      tlr.errorText = "code not found(id not found)";
+      return tlr;
     }
+    try {
+      final PassPorter passPorter = SpringUtils.getInstance().getBean(
+          PassPorter.class);
+      tlr.passPort = passPorter.get(attendantId);
+      if (tlr.passPort.getClients().size() >= tlr.passPort.getMaxClients()) {
+        tlr.errorText = "too much clients";
+        return tlr;
+      }
+    } catch (DocumentNotFoundException e) {
+      // ignore
+    }
+    tlr.errorText = "granted";
+    tlr.granted = true;
+    return tlr;
+  }
 
+  public static String login(String attendantId) {
+    TryLoginReturn tlr = tryLogin(attendantId);
+    if (!tlr.granted) {
+      return tlr.errorText;
+    }
     /* Test Code */
     WiFi.Login login = new WiFi.Login(request);
     if (login.remoteAddress.equals("127.0.0.1")
@@ -191,19 +219,21 @@ public class Pass extends Controller {
     }
     final PassPorter passPorter = SpringUtils.getInstance().getBean(
         PassPorter.class);
-    final PassPort passPort = passPorter.createPass(attendantId, 3, new FirstTime(attendant.getTicket(), attendantId));
+    final PassPort passPort = passPorter.createPass(attendantId, 3,
+        new FirstTime(tlr.attendant.getTicket(), attendantId));
     return passPorter.assignClient(passPort, login.remoteAddress,
         ResolvArp.ip2mac(login.remoteAddress));
   }
 
   public static void grantAccess() {
+    Logger.info("grantAccess:" + params.get("passPortId"));
     String passPortId = params.get("passPortId");
     render(passPortId);
   }
 
   public static void grantAccessJsonp() {
     String passPortId = params.get("passPortId");
-    String code = tryLogin(passPortId);
+    String code = login(passPortId);
     String json = new Gson().toJson(code);
     render(json);
   }
