@@ -36,8 +36,7 @@ import services.PassPort.Ip2Mac;
  */
 
 @Component
-public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
-    InitializingBean {
+public class PassPorter extends CouchDbRepositorySupport<PassPort> implements InitializingBean {
 
   @Autowired
   public PassPorter(@Qualifier("passPorterDatabase") CouchDbConnector db) {
@@ -47,44 +46,31 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     initStandardDesignDocument();
   }
 
-  @GenerateView
-  public List<PassPort> findByDisplayId(String id) {
-    return queryView("by_displayId", id);
-  }
+  //
+  // @GenerateView
+  // public List<PassPort> findByDisplayId(String id) {
+  // return queryView("by_displayId", id);
+  // }
 
   public interface FirstTime {
     public void run(PassPort pp);
   }
 
-  @View(name = "getUnusedKeyCodes", map = "function(doc) { if (!doc.used) emit(doc._id, null) }")
-  public PassPort createPass(String displayId, int maxClients, FirstTime firstTime) {
-    List<PassPort> passPort = findByDisplayId(displayId);
-    if (!passPort.isEmpty()) {
-      return passPort.get(0);
-    }
-
-    while (true) {
-      ViewQuery q = createQuery("getUnusedKeyCodes").includeDocs(true).limit(1);
-      List<PassPort> codes = db.queryView(q, PassPort.class);
-      if (!codes.isEmpty() && !codes.get(0).getUsed()) {
-        codes.get(0).setUsed(true);
-        codes.get(0).setDisplayId(displayId);
-        codes.get(0).setMaxClients(maxClients);
-        if (firstTime != null) {
-          firstTime.run(codes.get(0));
-        }
-        codes.get(0).setSendEmail(true);
-        List<DocumentOperationResult> result = db.executeAllOrNothing(codes);
-        if (result.isEmpty()) {
-          return codes.get(0);
-        }
-      }
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
+  // @View(name = "getUnusedKeyCodes", map =
+  // "function(doc) { if (!doc.used) emit(doc._id, null) }")
+  public PassPort createPass(String displayId, int maxClients,
+      FirstTime firstTime) {
+    try {
+      return this.get(displayId);
+    } catch (DocumentNotFoundException e) {
+        PassPort pass = new PassPort();
+        pass.setId(displayId);
+        pass.setUsed(true);
+        pass.setDisplayId(displayId);
+        pass.setMaxClients(maxClients);
+        db.create(pass);
+        firstTime.run(pass);
+        return pass;
     }
   }
 
@@ -109,59 +95,59 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
   public void afterPropertiesSet() throws Exception {
     play.Logger.info("PassPorter init");
     feedChanges();
-    new Thread(new Runnable() {
-
-      @Override
-      public void run() {
-        while (true) {
-          try {
-            int result = getUnusedKeyCount();
-            if (result < 500) {
-              Set<String> codes = new HashSet<String>();
-              String base = "23456789ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz";
-              for (int i = 0; i < 10000; ++i) {
-                long val = UUID.randomUUID().getLeastSignificantBits();
-                String code = "";
-                for (int j = 0; j < 64; ++j) {
-                  int b = (int) (val & 0x1f); // 5bit
-                  if (b < base.length()) {
-                    code = code + base.charAt(b);
-                  }
-                  if (code.length() >= 5) {
-                    codes.add(code);
-                    play.Logger.debug("DOIT:" + code);
-                    break;
-                  }
-                  val = val >> 5;
-                }
-              }
-              ViewQuery q = createQuery("all").keys(codes);
-              List<PassPort> passports = db.queryView(q, PassPort.class);
-              for (PassPort p : passports) {
-                codes.remove(p.getPassPortId());
-              }
-              db.executeAllOrNothing(CollectionUtils.collect(codes,
-                  new Transformer() {
-
-                    @Override
-                    public Object transform(Object arg0) {
-                      PassPort p = new PassPort();
-                      p.setId((String) arg0);
-                      p.setUsed(false);
-                      return p;
-                    }
-                  }));
-            }
-
-            Thread.sleep(10000);
-          } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-        }
-
-      }
-    }).start();
+//    new Thread(new Runnable() {
+//
+//      @Override
+//      public void run() {
+//        while (true) {
+//          try {
+//            int result = getUnusedKeyCount();
+//            if (result < 500) {
+//              Set<String> codes = new HashSet<String>();
+//              String base = "23456789ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz";
+//              for (int i = 0; i < 10000; ++i) {
+//                long val = UUID.randomUUID().getLeastSignificantBits();
+//                String code = "";
+//                for (int j = 0; j < 64; ++j) {
+//                  int b = (int) (val & 0x1f); // 5bit
+//                  if (b < base.length()) {
+//                    code = code + base.charAt(b);
+//                  }
+//                  if (code.length() >= 5) {
+//                    codes.add(code);
+//                    play.Logger.debug("DOIT:" + code);
+//                    break;
+//                  }
+//                  val = val >> 5;
+//                }
+//              }
+//              ViewQuery q = createQuery("all").keys(codes);
+//              List<PassPort> passports = db.queryView(q, PassPort.class);
+//              for (PassPort p : passports) {
+//                codes.remove(p.getPassPortId());
+//              }
+//              db.executeAllOrNothing(CollectionUtils.collect(codes,
+//                  new Transformer() {
+//
+//                    @Override
+//                    public Object transform(Object arg0) {
+//                      PassPort p = new PassPort();
+//                      p.setId((String) arg0);
+//                      p.setUsed(false);
+//                      return p;
+//                    }
+//                  }));
+//            }
+//
+//            Thread.sleep(10000);
+//          } catch (Exception e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//          }
+//        }
+//
+//      }
+//    }).start();
 
   }
 
@@ -175,18 +161,18 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     if (pp.getClients() == null) {
       pp.setClients(new ArrayList<PassPort.Ip2Mac>(3));
     }
-		boolean found = false;
+    boolean found = false;
     for (Ip2Mac im : pp.getClients()) {
       if (im.getIp().equals(ip) && im.getMac().equals(mac)) {
-				play.Logger.info("ip2mac is registered");
-				im.setPid(0);
-				found = true;
+        play.Logger.info("ip2mac is registered");
+        im.setPid(0);
+        found = true;
       }
     }
-		if (found) { 
-				db.update(pp);
-        return "granted";
-		}
+    if (found) {
+      db.update(pp);
+      return "granted";
+    }
     if (pp.getClients().size() >= pp.getMaxClients()) {
       return "too many clients";
     }
@@ -195,7 +181,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
     i2m.setMac(mac);
     pp.getClients().add(i2m);
     db.update(pp);
-		play.Logger.info("ip2mac store");
+    play.Logger.info("ip2mac store");
     return "granted";
   }
 
@@ -233,40 +219,43 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
 
         @Override
         public void run() {
-          //PassPort.Ip2Mac.clearIPTables();
+          // PassPort.Ip2Mac.clearIPTables();
           q.addAll(CollectionUtils.collect(my.getAll(), new Transformer() {
 
             @Override
             public Object transform(Object arg0) {
-              final String pp = ((PassPort)arg0).getId();
+              final String pp = ((PassPort) arg0).getId();
               return new Runnable() {
 
                 @Override
                 public void run() {
-									for(int i = 0; i < 10; ++i) {
-										try { 
-											PassPort my = db.get(PassPort.class, pp);	
-											if (my.openFireWall(false)) {
-												try { 
-													 if (play.Play.configuration.get("application.mode").equals("prod")) {
-														 db.update(my);
-													 }
-													 play.Logger.info("openFireWall:done:" + my.getId()+":"+i);
-													 return;
-												} catch (org.ektorp.UpdateConflictException e) {
-													 play.Logger.info("Retry openfirewall:for:" + my.getId());
-												}	
-											} else {
-												//play.Logger.info("no change" + my.getId());
-												return;
-											}
-										} catch (Exception e) {
-											play.Logger.error("openFireWall failed:"+pp+":"+e);
-											return;
-										}	
-									}
-									play.Logger.error("openFireWall to  much" + pp);
-									return;
+                  for (int i = 0; i < 10; ++i) {
+                    try {
+                      PassPort my = db.get(PassPort.class, pp);
+                      if (my.openFireWall(false)) {
+                        try {
+                          if (play.Play.configuration.get("application.mode")
+                              .equals("prod")) {
+                            db.update(my);
+                          }
+                          play.Logger.info("openFireWall:done:" + my.getId()
+                              + ":" + i);
+                          return;
+                        } catch (org.ektorp.UpdateConflictException e) {
+                          play.Logger.info("Retry openfirewall:for:"
+                              + my.getId());
+                        }
+                      } else {
+                        // play.Logger.info("no change" + my.getId());
+                        return;
+                      }
+                    } catch (Exception e) {
+                      play.Logger.error("openFireWall failed:" + pp + ":" + e);
+                      return;
+                    }
+                  }
+                  play.Logger.error("openFireWall to  much" + pp);
+                  return;
                 }
               };
             }
@@ -300,27 +289,29 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
 
               @Override
               public void run() {
-								try {
-									if (dc.isDeleted()) {
-play.Logger.info("**** isDeleted():"+dc.getId()+":"+dc.getRevision());
-										Options op = new Options();
-										op.revision(dc.getRevision());
-										PassPort pp = db.get(PassPort.class, dc.getId(), op);
-										return;
-									}
-									PassPort pp = my.get(dc.getId());
-									if (pp.openFireWall(true)) {
-									 	if (play.Play.configuration.get("application.mode").equals("prod")) {
-											db.update(pp);
-										}
-									}
-								} catch (Exception e) {
-            			play.Logger.error("update feed aborted", e);
-								}
+                try {
+                  if (dc.isDeleted()) {
+                    play.Logger.info("**** isDeleted():" + dc.getId() + ":"
+                        + dc.getRevision());
+                    Options op = new Options();
+                    op.revision(dc.getRevision());
+                    PassPort pp = db.get(PassPort.class, dc.getId(), op);
+                    return;
+                  }
+                  PassPort pp = my.get(dc.getId());
+                  if (pp.openFireWall(true)) {
+                    if (play.Play.configuration.get("application.mode").equals(
+                        "prod")) {
+                      db.update(pp);
+                    }
+                  }
+                } catch (Exception e) {
+                  play.Logger.error("update feed aborted:"+e.getMessage());
+                }
               }
             });
           } catch (InterruptedException e) {
-            play.Logger.error("changes feed aborted", e);
+            play.Logger.error("changes feed aborted:"+e.getMessage());
           }
         }
 

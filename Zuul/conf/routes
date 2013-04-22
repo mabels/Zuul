@@ -28,7 +28,7 @@ GET     /WiFi/loggedIn                         WiFi.login
 GET     /WiFi/qrCode/{passPortId}              WiFi.qrCode
 GET	    /{<\d{12}>displayId}				   Pass.displayId
 GET	    /{<\d{4}-\d{4}\-\d{4}>displayId}		Pass.longDisplayId
-GET	    /{<\w{5}>passPortId}				   Pass.grantAccess
+GET	    /grant/{<\d{4}-\d{4}\-\d{4}>passPortId}				   Pass.grantAccess
 
 
 *       /.*                                    WiFi.catchAll

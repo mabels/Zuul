@@ -69,9 +69,27 @@ public class Attendant extends CouchDbDocument {
 
       private String title;
       private String value;
+      private boolean required;
+      private long fieldId;
       private String type;
-    }
 
+      public boolean isRequired() {
+        return required;
+      }
+
+      public void setRequired(boolean required) {
+        this.required = required;
+      }
+
+      public long getFieldId() {
+        return fieldId;
+      }
+
+      public void setFieldId(long fieldId) {
+        this.fieldId = fieldId;
+      }
+    }
+    @JsonIgnore
     private List<Tuple> userData;
     private int discountAmount;
     private int ticketFee;

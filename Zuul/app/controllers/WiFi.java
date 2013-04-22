@@ -112,7 +112,23 @@ public class WiFi extends Controller {
     public String url;
     public String secure;
     public String macAddress;
-		public String code;
+		private String code;
+    public String getCode() {
+      if (code != null) {
+        play.Logger.info("getCode:"+code);
+        return code;
+      }
+      if (code_grp1 != null &&
+          code_grp2 != null &&
+          code_grp3 != null) {
+        play.Logger.info("getCode:"+code_grp1+":"+code_grp2+":"+code_grp3);
+        return code_grp1.trim() + "-" + code_grp2.trim() + "-" + code_grp3.trim();
+      }
+      return null;
+    }
+    public String code_grp1;
+    public String code_grp2;
+    public String code_grp3;
     public Boolean granted = false;
   }
 
@@ -121,16 +137,15 @@ public class WiFi extends Controller {
     if (login.macAddress == null) {
       login.macAddress = ResolvArp.ip2mac(login.remoteAddress);
     }
-    if (login.code != null) {
-      String code = Pass.tryLogin(login.code.trim());
+    if (login.getCode() != null) {
+      String code = Pass.tryLogin(login.getCode().trim());
       play.Logger.info("tryLogin:return="+ code);
       if (code.startsWith("http")) {
         redirect(code);
       }
       if (code.equals("granted")) {
         login.granted = true;
-        redirect(play.Play.configuration.get("application.baseUrl")+login.code);
-        return;
+        redirect(play.Play.configuration.get("application.baseUrl")+"/grant/"+login.getCode());
       } else {
         login.errorClass = "error";
         login.errorText = code;

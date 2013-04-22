@@ -25,7 +25,7 @@ public class TestIpTables extends UnitTest {
         
         @Override
         public InputStream getInputStream() {
-          //return new ByteArrayInputStream(arg0)
+          return null; // new ByteArrayInputStream(arg0);
         }
         
         @Override

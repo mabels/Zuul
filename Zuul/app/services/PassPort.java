@@ -86,11 +86,11 @@ public class PassPort extends CouchDbDocument {
 
 		private static void cmdProcessor(List<String> cmd) {
 			String str = StringUtils.join(cmd, " ");
-      play.Logger.info("Starting:"+str);
+      play.Logger.info("Starting-1:"+str);
       ProcessBuilder pb = new ProcessBuilder();
       pb.command(cmd);
       try {
-        pb.start().wait();
+        pb.start().waitFor();
       } catch (IOException e) {
         play.Logger.error(e, "Failed to start:IOException:"+str);
       } catch (InterruptedException e) {

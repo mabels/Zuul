@@ -26,7 +26,7 @@ public class Attendants extends CouchDbRepositorySupport<Attendant> {
     initStandardDesignDocument();
   }
 
- 
+  /*
   @View(name = "findByEmail", map = "function(doc) { doc.ticket.email && emit(doc.ticket.email.toLowerCase(), null); }")
   public Collection<Attendant.Ticket> findByEmail(String str) {
     String query = str.toLowerCase().trim();
@@ -38,7 +38,7 @@ public class Attendants extends CouchDbRepositorySupport<Attendant> {
       }
     });
   }
-  
+  */
   
   //private List<Attendant> attendees;
 

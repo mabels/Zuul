@@ -1,4 +1,4 @@
-Your authentication code for the NEXT Service Design Wi-Fi
+Your authentication code for the NEXT 2013 Wi-Fi
 ==========================================================
 
 Hello ${ticket.getFirstName()},
@@ -16,4 +16,4 @@ Your code is associated with your E-Mail: ${ticket.email}
 Help is available at the accreditation desk.
 
 Cheers,
-Your SinnerSchrader Wi-Fi Team @ NEXT Service Design 2012
+Your SinnerSchrader Wi-Fi Team @ NEXT 2013

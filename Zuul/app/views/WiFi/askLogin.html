@@ -1,12 +1,17 @@
 #{extends 'main.html' /}
-        <h1 class="h1">Please enter:<br/>* your authentication code<br/>or<br/>* your registration email address</h1>
+        <h1 class="h1">Please enter:<br/>* your badge code<br/></h1>
         <form action="/WiFi/askLogin" method="post">
             <input name="login.host" type="hidden" value="${login.host}" />
             <input name="login.remoteAddress" type="hidden" value="${login.remoteAddress}" />
             <input name="login.url" type="hidden" value="${login.url}" />
             <input name="login.secure" type="hidden" value="${login.secure}" />
+            <input name="login.code" type="hidden" value="${login.code}" />
             <div class="formrow ${login.errorClass}">
-                <input name="login.code" type="text" value="${login.code}" />
+                <input name="login.code_grp1" type="text" value="${login.code_grp1}" class="code_grp" size="4" maxlength="4"/>
+                -
+                <input name="login.code_grp2" type="text" value="${login.code_grp2}" class="code_grp" size="4" maxlength="4"/>
+                -
+                <input name="login.code_grp3" type="text" value="${login.code_grp3}" class="code_grp" size="4" maxlength="4"/>
                 <span class="tooltip">${login.errorText}</span>
             </div>
  
@@ -14,6 +19,6 @@
                 <input type="submit" value="Login" class="button" />
             </div>
             <div class="inforow">
-                *Don't have your code? <br /><b>Scan your badge with any QR code reader</b> or use one of the computers at the back side of the accreditation desk
+                *Don't have your code? <br /><b>Scan your badge with any QR code reader</b>
             </div>
         </form>
