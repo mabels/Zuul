@@ -3,7 +3,7 @@ Your authentication code for the NEXT 2013 Wi-Fi
 
 Hello ${ticket.getFirstName()},
 
-just in case you need it - this is your personal authentication code for the NEXT12 Wi-Fi: ${passPort}
+just in case you need it - this is your personal authentication code for the NEXT13 Wi-Fi: ${passPort}
 
 You can use it to register your devices.
 

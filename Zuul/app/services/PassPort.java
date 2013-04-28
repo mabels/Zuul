@@ -73,7 +73,7 @@ public class PassPort extends CouchDbDocument {
       cmd.add("-s");
       cmd.add(ip);
       cmd.add("-r");
-      cmd.add("10.24.66.1");
+      cmd.add("10.200.0.1");
       cmd.add("-m");
       cmd.add("9232");
       if (play.Play.configuration.get("application.mode").equals("prod")) {

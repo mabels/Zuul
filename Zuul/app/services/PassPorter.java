@@ -36,7 +36,8 @@ import services.PassPort.Ip2Mac;
  */
 
 @Component
-public class PassPorter extends CouchDbRepositorySupport<PassPort> implements InitializingBean {
+public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
+    InitializingBean {
 
   @Autowired
   public PassPorter(@Qualifier("passPorterDatabase") CouchDbConnector db) {
@@ -63,14 +64,14 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
     try {
       return this.get(displayId);
     } catch (DocumentNotFoundException e) {
-        PassPort pass = new PassPort();
-        pass.setId(displayId);
-        pass.setUsed(true);
-        pass.setDisplayId(displayId);
-        pass.setMaxClients(maxClients);
-        db.create(pass);
-        firstTime.run(pass);
-        return pass;
+      PassPort pass = new PassPort();
+      pass.setId(displayId);
+      pass.setUsed(true);
+      pass.setDisplayId(displayId);
+      pass.setMaxClients(maxClients);
+      db.create(pass);
+      firstTime.run(pass);
+      return pass;
     }
   }
 
@@ -95,59 +96,59 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
   public void afterPropertiesSet() throws Exception {
     play.Logger.info("PassPorter init");
     feedChanges();
-//    new Thread(new Runnable() {
-//
-//      @Override
-//      public void run() {
-//        while (true) {
-//          try {
-//            int result = getUnusedKeyCount();
-//            if (result < 500) {
-//              Set<String> codes = new HashSet<String>();
-//              String base = "23456789ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz";
-//              for (int i = 0; i < 10000; ++i) {
-//                long val = UUID.randomUUID().getLeastSignificantBits();
-//                String code = "";
-//                for (int j = 0; j < 64; ++j) {
-//                  int b = (int) (val & 0x1f); // 5bit
-//                  if (b < base.length()) {
-//                    code = code + base.charAt(b);
-//                  }
-//                  if (code.length() >= 5) {
-//                    codes.add(code);
-//                    play.Logger.debug("DOIT:" + code);
-//                    break;
-//                  }
-//                  val = val >> 5;
-//                }
-//              }
-//              ViewQuery q = createQuery("all").keys(codes);
-//              List<PassPort> passports = db.queryView(q, PassPort.class);
-//              for (PassPort p : passports) {
-//                codes.remove(p.getPassPortId());
-//              }
-//              db.executeAllOrNothing(CollectionUtils.collect(codes,
-//                  new Transformer() {
-//
-//                    @Override
-//                    public Object transform(Object arg0) {
-//                      PassPort p = new PassPort();
-//                      p.setId((String) arg0);
-//                      p.setUsed(false);
-//                      return p;
-//                    }
-//                  }));
-//            }
-//
-//            Thread.sleep(10000);
-//          } catch (Exception e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//          }
-//        }
-//
-//      }
-//    }).start();
+    // new Thread(new Runnable() {
+    //
+    // @Override
+    // public void run() {
+    // while (true) {
+    // try {
+    // int result = getUnusedKeyCount();
+    // if (result < 500) {
+    // Set<String> codes = new HashSet<String>();
+    // String base = "23456789ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz";
+    // for (int i = 0; i < 10000; ++i) {
+    // long val = UUID.randomUUID().getLeastSignificantBits();
+    // String code = "";
+    // for (int j = 0; j < 64; ++j) {
+    // int b = (int) (val & 0x1f); // 5bit
+    // if (b < base.length()) {
+    // code = code + base.charAt(b);
+    // }
+    // if (code.length() >= 5) {
+    // codes.add(code);
+    // play.Logger.debug("DOIT:" + code);
+    // break;
+    // }
+    // val = val >> 5;
+    // }
+    // }
+    // ViewQuery q = createQuery("all").keys(codes);
+    // List<PassPort> passports = db.queryView(q, PassPort.class);
+    // for (PassPort p : passports) {
+    // codes.remove(p.getPassPortId());
+    // }
+    // db.executeAllOrNothing(CollectionUtils.collect(codes,
+    // new Transformer() {
+    //
+    // @Override
+    // public Object transform(Object arg0) {
+    // PassPort p = new PassPort();
+    // p.setId((String) arg0);
+    // p.setUsed(false);
+    // return p;
+    // }
+    // }));
+    // }
+    //
+    // Thread.sleep(10000);
+    // } catch (Exception e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
+    // }
+    //
+    // }
+    // }).start();
 
   }
 
@@ -212,7 +213,6 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
     initialLoader(q);
   }
 
-  
   private void initialLoader(final BlockingQueue<Runnable> q) {
     synchronized (q) {
       final PassPorter my = this;
@@ -222,7 +222,7 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
         public void run() {
           // PassPort.Ip2Mac.clearIPTables();
           q.addAll(CollectionUtils.collect(my.getAll(), new Transformer() {
-        
+
             @Override
             public Object transform(Object arg0) {
               final String pp = ((PassPort) arg0).getId();
@@ -233,15 +233,15 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
                   for (int i = 0; i < 10; ++i) {
                     try {
                       PassPort my = db.get(PassPort.class, pp);
-                      play.Logger.info("initialLoader:"+my.getDisplayId());
+                      play.Logger.info("initialLoader:" + my.getDisplayId());
                       if (my.openFireWall(false)) {
                         try {
                           /*
-                          if (play.Play.configuration.get("application.mode")
-                              .equals("prod")) {
-                          */
+                           * if (play.Play.configuration.get("application.mode")
+                           * .equals("prod")) {
+                           */
                           db.update(my);
-                          //}
+                          // }
                           play.Logger.info("openFireWall:done:" + my.getId()
                               + ":" + i);
                           return;
@@ -270,11 +270,10 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
     }
   }
 
- 
-//  public BlockingQueue<Runnable> getQ() {
-//    return q;
-//  }
-  //private final Set<String> blockIds = new Conc<String>();
+  // public BlockingQueue<Runnable> getQ() {
+  // return q;
+  // }
+  // private final Set<String> blockIds = new Conc<String>();
   private final BlockingQueue<Runnable> q = new LinkedBlockingQueue<Runnable>();
 
   private void feedChanges() {
@@ -283,56 +282,58 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements In
       @Override
       public void run() {
         play.Logger.info("started feedChanges" + db.getDatabaseName());
-        long seq = db.getDbInfo().getUpdateSeq();
-        ChangesCommand cmd = new ChangesCommand.Builder().since(seq)
-            .heartbeat(10).build();
-        ChangesFeed feed = db.changesFeed(cmd);
 
         initialLoader(q);
         processor(q);
         processor(q);
-        while (feed.isAlive()) {
+        while(true) {
           try {
-            final DocumentChange dc = feed.next();
-            play.Logger.info("DocumentChange:"+dc.getId()+":"+dc.getRevision()+":"+dc.getSequence());
-            q.add(new Runnable() {
-
-              @Override
-              public void run() {
-                try {
-                  if (dc.isDeleted()) {
-                    play.Logger.info("**** isDeleted():" + dc.getId() + ":"
-                        + dc.getRevision());
-                    Options op = new Options();
-                    op.revision(dc.getRevision());
-                    PassPort pp = db.get(PassPort.class, dc.getId(), op);
-                    return;
+            long seq = db.getDbInfo().getUpdateSeq();
+            ChangesCommand cmd = new ChangesCommand.Builder().since(seq)
+                .heartbeat(10).build();
+            ChangesFeed feed = db.changesFeed(cmd);
+            while (feed.isAlive()) {
+              try {
+                final DocumentChange dc = feed.next();
+                play.Logger.info("DocumentChange:"+dc.getId()+":"+dc.getRevision()+":"+dc.getSequence());
+                q.add(new Runnable() {
+    
+                  @Override
+                  public void run() {
+                    try {
+                      if (dc.isDeleted()) {
+                        play.Logger.info("**** isDeleted():" + dc.getId() + ":"
+                            + dc.getRevision());
+                        Options op = new Options();
+                        op.revision(dc.getRevision());
+                        PassPort pp = db.get(PassPort.class, dc.getId(), op);
+                        return;
+                      }
+                      PassPort pp = my.get(dc.getId());
+                      play.Logger.info("feedChanges:"+pp.getDisplayId());
+                      if (pp.openFireWall(true)) {
+                        /*
+                         * if (play.Play.configuration.get("application.mode").equals(
+                            "prod")) {
+                         */
+                          //play.Logger.info("db:Update:pre:"+dc.getId()+":"+dc.getRevision());
+                          db.update(pp);
+                          //play.Logger.info("db:Update:pst:"+dc.getId()+":"+dc.getRevision());
+                          
+                        //}
+                      }
+                    } catch (Exception e) {
+                      play.Logger.error("update feed aborted:"+e.getMessage());
+                    }
                   }
-                  PassPort pp = my.get(dc.getId());
-                  play.Logger.info("feedChanges:"+pp.getDisplayId());
-                  if (pp.openFireWall(true)) {
-                    /*
-                     * if (play.Play.configuration.get("application.mode").equals(
-                        "prod")) {
-                     */
-                      //play.Logger.info("db:Update:pre:"+dc.getId()+":"+dc.getRevision());
-                      db.update(pp);
-                      //play.Logger.info("db:Update:pst:"+dc.getId()+":"+dc.getRevision());
-                      
-                    //}
-                  }
-                } catch (Exception e) {
-                  play.Logger.error("update feed aborted:"+e.getMessage());
-                }
+                });
+              } catch (InterruptedException e) {
+                play.Logger.error("changes feed aborted:"+e.getMessage());
               }
-            });
-          } catch (InterruptedException e) {
-            play.Logger.error("changes feed aborted:"+e.getMessage());
           }
+        } catch (Exception e) {
+          play.Logger.error("update feed aborted:"+e.getMessage());        
         }
-
-      }
-    })).start();
+      })).start();
   }
-
 }
