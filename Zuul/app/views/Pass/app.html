@@ -78,7 +78,7 @@ LOGO-Powered by
 		} else if (url == "next") {
 			backToIdle();
 		} else {
-			var matcher = url.match(/^http[s]*:\/\/wifi.nextconf.eu\/(\d{12})$/)
+			var matcher = url.match(/^http[s]*:\/\/wifi.sinnerschrader.it\/(\d{12})$/)
 			if (matcher && matcher[1] == activeDisplayId) {
 				activeDisplayId = matcher[1]
 				nextTimer && clearTimeout(nextTimer);

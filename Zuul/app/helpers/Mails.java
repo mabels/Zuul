@@ -9,7 +9,7 @@ public class Mails extends Mailer {
     if (ticket.getEmail() == null) {
       return;
     }
-    setFrom("WiFi <wifi@nextconf.eu>");
+    setFrom("WiFi <wifi@sinnerschrader.it>");
     setSubject("Your WiFi Accesscode");
     addRecipient(ticket.getEmail());
     send("Mails/passPortCreated.html", ticket, passPort);

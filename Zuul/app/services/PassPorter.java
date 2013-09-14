@@ -253,10 +253,10 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
                         // play.Logger.info("no change" + my.getId());
                         return;
                       }
-                    } catch (Exception e) {
-                      play.Logger.error("openFireWall failed:" + pp + ":" + e);
-                      return;
-                    }
+                    } catch (Throwable e) {
+                        play.Logger.error("openFireWall failed:" + pp + ":" + e);
+                        return;
+                    } 
                   }
                   play.Logger.error("openFireWall to  much" + pp);
                   return;
@@ -282,22 +282,19 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
       @Override
       public void run() {
         play.Logger.info("started feedChanges" + db.getDatabaseName());
-
         initialLoader(q);
         processor(q);
         processor(q);
         while(true) {
           try {
             long seq = db.getDbInfo().getUpdateSeq();
-            ChangesCommand cmd = new ChangesCommand.Builder().since(seq)
-                .heartbeat(10).build();
+            ChangesCommand cmd = new ChangesCommand.Builder().since(seq).heartbeat(10).build();
             ChangesFeed feed = db.changesFeed(cmd);
             while (feed.isAlive()) {
               try {
                 final DocumentChange dc = feed.next();
                 play.Logger.info("DocumentChange:"+dc.getId()+":"+dc.getRevision()+":"+dc.getSequence());
                 q.add(new Runnable() {
-    
                   @Override
                   public void run() {
                     try {
@@ -312,19 +309,17 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
                       PassPort pp = my.get(dc.getId());
                       play.Logger.info("feedChanges:"+pp.getDisplayId());
                       if (pp.openFireWall(true)) {
-                        /*
-                         * if (play.Play.configuration.get("application.mode").equals(
+                    	play.Logger.info("openFireWall:mode:"+play.Play.configuration.get("application.mode"));
+                        if (play.Play.configuration.get("application.mode").equals(
                             "prod")) {
-                         */
-                          //play.Logger.info("db:Update:pre:"+dc.getId()+":"+dc.getRevision());
-                          db.update(pp);
-                          //play.Logger.info("db:Update:pst:"+dc.getId()+":"+dc.getRevision());
-                          
-                        //}
+                         play.Logger.info("db:Update:pre:"+dc.getId()+":"+dc.getRevision());
+                         db.update(pp);
+                         play.Logger.info("db:Update:pst:"+dc.getId()+":"+dc.getRevision());   
+                       }
                       }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                       play.Logger.error("update feed aborted:"+e.getMessage());
-                    }
+                    } 
                   }
                 });
               } catch (InterruptedException e) {
@@ -334,6 +329,8 @@ public class PassPorter extends CouchDbRepositorySupport<PassPort> implements
         } catch (Exception e) {
           play.Logger.error("update feed aborted:"+e.getMessage());        
         }
-      })).start();
+      }
+    }
+    })).start();
   }
 }

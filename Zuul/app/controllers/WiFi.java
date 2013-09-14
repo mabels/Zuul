@@ -39,7 +39,7 @@ public class WiFi extends Controller {
     hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
     QRCodeWriter qrCodeWriter = new QRCodeWriter();
-    BitMatrix bitMatrix = qrCodeWriter.encode("https://wifi.nextconf.eu/"
+    BitMatrix bitMatrix = qrCodeWriter.encode("https://wifi.sinnerschrader.it/"
         + passPortId, BarcodeFormat.QR_CODE, size, size, hintMap);
     // Make the BufferedImage that are to hold the QRCode
     int matrixWidth = bitMatrix.getWidth();
